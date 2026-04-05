@@ -86,8 +86,7 @@ const predefinedMemberCodes = [
   { username: 'quentin', tempCode: 'quentin2026' },
   { username: 'warinen', tempCode: 'warinen2026' },
   { username: 'pinelancien', tempCode: 'pinel2026' },
-  { username: 'korraze', tempCode: 'korraze2026' },
-  { username: 'limulesama', tempCode: 'limule2026' }
+  { username: 'korraze', tempCode: 'korraze2026' }
 ];
 
 function saveData(key, data) {
@@ -1191,7 +1190,7 @@ if (playerLoginForm) {
       return normalizeUsername(candidate.username) === usernameKey && candidate.password === password;
     });
 
-    if (adminAccount && !predefinedMember) {
+    if (adminAccount) {
       currentAdmin = adminAccount.username;
       currentPlayer = adminAccount.username;
       localStorage.setItem(keys.adminSession, currentAdmin);
