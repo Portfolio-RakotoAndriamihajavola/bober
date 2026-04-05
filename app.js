@@ -127,6 +127,8 @@ const mapMenuItems = document.querySelectorAll('[data-map-select]');
 const mapPreviewImage = document.getElementById('mapPreviewImage');
 const mapPreviewTitle = document.getElementById('mapPreviewTitle');
 const mapPreviewSubtitle = document.getElementById('mapPreviewSubtitle');
+const accessLock = document.getElementById('accessLock');
+const openAuthGateBtn = document.getElementById('openAuthGateBtn');
 const emptyState = document.getElementById('emptyState');
 const defensePrinciples = document.getElementById('defensePrinciples');
 const topSearch = document.getElementById('topSearch');
@@ -656,10 +658,27 @@ document.addEventListener('click', (event) => {
     mapMenu.open = false;
   }
 
-  if (authGate?.open && !authGate.contains(target)) {
+  if (authGate?.open && !authGate.contains(target) && !isAccessLocked()) {
     authGate.open = false;
   }
 });
+
+if (openAuthGateBtn) {
+  openAuthGateBtn.addEventListener('click', () => {
+    if (authGate) {
+      authGate.open = true;
+    }
+  });
+}
+
+const authGateSummary = authGate?.querySelector('summary');
+if (authGateSummary) {
+  authGateSummary.addEventListener('click', (event) => {
+    if (isAccessLocked() && authGate?.open) {
+      event.preventDefault();
+    }
+  });
+}
 
 if (teamGrid) {
   teamGrid.addEventListener('click', (event) => {
@@ -800,6 +819,23 @@ let currentPlayer = localStorage.getItem(keys.playerSession) || '';
 if (currentAdmin && !currentPlayer) {
   currentPlayer = currentAdmin;
   localStorage.setItem(keys.playerSession, currentPlayer);
+}
+
+function isAccessLocked() {
+  return !currentPlayer;
+}
+
+function updateAccessLock() {
+  const locked = isAccessLocked();
+
+  document.body.classList.toggle('site-locked', locked);
+  if (accessLock) {
+    accessLock.classList.toggle('hidden', !locked);
+  }
+
+  if (locked && authGate) {
+    authGate.open = true;
+  }
 }
 
 function normalizeUsername(value) {
@@ -1044,6 +1080,7 @@ function updatePlayerUi() {
   }
 
   updateAuthState();
+  updateAccessLock();
 }
 
 function updateAuthState() {
