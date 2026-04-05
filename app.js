@@ -80,6 +80,16 @@ const adminAccounts = [
   { username: 'coach', password: 'wiprcoach' }
 ];
 
+const predefinedMemberCodes = [
+  { username: 'bobe', tempCode: 'bobe2026' },
+  { username: 'h1mmel', tempCode: 'h1mmel2026' },
+  { username: 'quentin', tempCode: 'quentin2026' },
+  { username: 'warinen', tempCode: 'warinen2026' },
+  { username: 'pinelancien', tempCode: 'pinel2026' },
+  { username: 'korraze', tempCode: 'korraze2026' },
+  { username: 'limulesama', tempCode: 'limule2026' }
+];
+
 function saveData(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
@@ -127,12 +137,12 @@ const mapMenuItems = document.querySelectorAll('[data-map-select]');
 const mapPreviewImage = document.getElementById('mapPreviewImage');
 const mapPreviewTitle = document.getElementById('mapPreviewTitle');
 const mapPreviewSubtitle = document.getElementById('mapPreviewSubtitle');
-const accessLock = document.getElementById('accessLock');
-const openAuthGateBtn = document.getElementById('openAuthGateBtn');
 const emptyState = document.getElementById('emptyState');
 const defensePrinciples = document.getElementById('defensePrinciples');
 const topSearch = document.getElementById('topSearch');
 const topAuthState = document.getElementById('topAuthState');
+const siteLockBanner = document.getElementById('siteLockBanner');
+const openAuthGateBtn = document.getElementById('openAuthGateBtn');
 const teamGrid = document.getElementById('teamGrid');
 const teamProfiles = document.querySelectorAll('.team-profile');
 const teamDetailName = document.getElementById('teamDetailName');
@@ -653,32 +663,16 @@ window.addEventListener('scroll', () => {
 
 document.addEventListener('click', (event) => {
   const target = event.target;
+  const clickedOpenAuthButton = Boolean(openAuthGateBtn && openAuthGateBtn.contains(target));
 
   if (mapMenu?.open && !mapMenu.contains(target)) {
     mapMenu.open = false;
   }
 
-  if (authGate?.open && !authGate.contains(target) && !isAccessLocked()) {
+  if (authGate?.open && !authGate.contains(target) && !clickedOpenAuthButton) {
     authGate.open = false;
   }
 });
-
-if (openAuthGateBtn) {
-  openAuthGateBtn.addEventListener('click', () => {
-    if (authGate) {
-      authGate.open = true;
-    }
-  });
-}
-
-const authGateSummary = authGate?.querySelector('summary');
-if (authGateSummary) {
-  authGateSummary.addEventListener('click', (event) => {
-    if (isAccessLocked() && authGate?.open) {
-      event.preventDefault();
-    }
-  });
-}
 
 if (teamGrid) {
   teamGrid.addEventListener('click', (event) => {
@@ -806,8 +800,9 @@ if (upcomingForm) {
 const commentForm = document.getElementById('commentForm');
 const commentList = document.getElementById('commentList');
 const commentMatchSelect = document.getElementById('commentMatch');
-const playerSignupForm = document.getElementById('playerSignupForm');
 const playerLoginForm = document.getElementById('playerLoginForm');
+const playerResetForm = document.getElementById('playerResetForm');
+const playerResetHint = document.getElementById('playerResetHint');
 const playerConnected = document.getElementById('playerConnected');
 const playerStatus = document.getElementById('playerStatus');
 const playerLogout = document.getElementById('playerLogout');
@@ -815,27 +810,11 @@ const commentAuthorInput = document.getElementById('commentAuthor');
 
 let currentAdmin = localStorage.getItem(keys.adminSession) || '';
 let currentPlayer = localStorage.getItem(keys.playerSession) || '';
+let pendingPasswordResetUser = '';
 
 if (currentAdmin && !currentPlayer) {
   currentPlayer = currentAdmin;
   localStorage.setItem(keys.playerSession, currentPlayer);
-}
-
-function isAccessLocked() {
-  return !currentPlayer;
-}
-
-function updateAccessLock() {
-  const locked = isAccessLocked();
-
-  document.body.classList.toggle('site-locked', locked);
-  if (accessLock) {
-    accessLock.classList.toggle('hidden', !locked);
-  }
-
-  if (locked && authGate) {
-    authGate.open = true;
-  }
 }
 
 function normalizeUsername(value) {
@@ -1056,15 +1035,75 @@ function loadPlayers() {
   return Array.isArray(rawPlayers) ? rawPlayers : [];
 }
 
+function findPredefinedMember(usernameKey) {
+  return predefinedMemberCodes.find((member) => normalizeUsername(member.username) === usernameKey) || null;
+}
+
+function savePlayerAccount(username, password, forcePasswordChange = false) {
+  const players = loadPlayers();
+  const usernameKey = normalizeUsername(username);
+  const existingIndex = players.findIndex((player) => normalizeUsername(player.username || '') === usernameKey);
+  const payload = {
+    username,
+    password,
+    forcePasswordChange,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) {
+    const existing = players[existingIndex] || {};
+    players[existingIndex] = {
+      ...existing,
+      ...payload,
+      createdAt: existing.createdAt || payload.updatedAt
+    };
+  } else {
+    players.unshift({
+      ...payload,
+      createdAt: payload.updatedAt
+    });
+  }
+
+  saveData(keys.players, players);
+}
+
+function openPasswordReset(username) {
+  pendingPasswordResetUser = username;
+
+  if (playerLoginForm) playerLoginForm.classList.add('hidden');
+  if (playerResetForm) playerResetForm.classList.remove('hidden');
+  if (playerResetHint) {
+    playerResetHint.textContent = `Premiere connexion pour ${username}. Redefinis ton mot de passe.`;
+  }
+
+  const resetPasswordInput = document.getElementById('playerResetPassword');
+  if (resetPasswordInput) {
+    resetPasswordInput.focus();
+  }
+}
+
+function completePlayerLogin(username) {
+  currentAdmin = '';
+  localStorage.removeItem(keys.adminSession);
+  currentPlayer = username;
+  localStorage.setItem(keys.playerSession, currentPlayer);
+}
+
 function updatePlayerUi() {
   const isConnected = Boolean(currentPlayer);
 
-  if (!playerSignupForm || !playerLoginForm || !playerConnected || !playerStatus || !commentAuthorInput) {
+  if (!playerLoginForm || !playerConnected || !playerStatus || !commentAuthorInput) {
     return;
   }
 
-  playerSignupForm.classList.toggle('hidden', isConnected);
-  playerLoginForm.classList.toggle('hidden', isConnected);
+  if (isConnected) {
+    playerLoginForm.classList.add('hidden');
+    if (playerResetForm) playerResetForm.classList.add('hidden');
+  } else if (!pendingPasswordResetUser) {
+    playerLoginForm.classList.remove('hidden');
+    if (playerResetForm) playerResetForm.classList.add('hidden');
+  }
+
   playerConnected.classList.toggle('hidden', !isConnected);
 
   if (isConnected) {
@@ -1080,7 +1119,7 @@ function updatePlayerUi() {
   }
 
   updateAuthState();
-  updateAccessLock();
+  updateSiteAccessUi();
 }
 
 function updateAuthState() {
@@ -1097,6 +1136,27 @@ function updateAuthState() {
   }
 
   topAuthState.textContent = 'Non connecté';
+}
+
+function updateSiteAccessUi() {
+  const isConnected = Boolean(currentPlayer);
+
+  document.body.classList.toggle('site-locked', !isConnected);
+  if (siteLockBanner) {
+    siteLockBanner.classList.toggle('hidden', isConnected);
+  }
+}
+
+function focusAuthLogin() {
+  if (currentPlayer || !playerLoginForm || pendingPasswordResetUser) return;
+
+  playerLoginForm.classList.remove('hidden');
+  playerLoginForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const loginUsernameInput = document.getElementById('playerLoginUsername');
+  if (loginUsernameInput) {
+    loginUsernameInput.focus();
+  }
 }
 
 function updateAdminUi() {
@@ -1118,56 +1178,6 @@ function renderCommentMatchOptions() {
   commentMatchSelect.placeholder = 'Match (ex: BOBER vs TEAMX - 13-9)';
 }
 
-if (playerSignupForm) {
-  playerSignupForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const usernameInput = document.getElementById('playerSignupUsername');
-    const passwordInput = document.getElementById('playerSignupPassword');
-    const username = usernameInput.value.trim();
-    const usernameKey = normalizeUsername(username);
-    const password = passwordInput.value;
-
-    if (username.length < 3) {
-      alert('Le pseudo doit faire au moins 3 caractères.');
-      return;
-    }
-
-    if (password.length < 4) {
-      alert('Le mot de passe doit faire au moins 4 caractères.');
-      return;
-    }
-
-    const players = loadPlayers();
-    const alreadyExists = players.some((player) => normalizeUsername(player.username || '') === usernameKey);
-
-    if (alreadyExists) {
-      alert('Ce pseudo existe déjà. Choisis-en un autre.');
-      return;
-    }
-
-    players.unshift({
-      username,
-      password,
-      createdAt: new Date().toISOString()
-    });
-
-    saveData(keys.players, players);
-    currentAdmin = '';
-    localStorage.removeItem(keys.adminSession);
-    currentPlayer = username;
-    localStorage.setItem(keys.playerSession, currentPlayer);
-
-    playerSignupForm.reset();
-    if (playerLoginForm) playerLoginForm.reset();
-    updateAdminUi();
-    updatePlayerUi();
-    renderTierBoard(currentTeamProfile);
-    renderComments();
-    renderAttendancePolls();
-  });
-}
-
 if (playerLoginForm) {
   playerLoginForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -1175,12 +1185,13 @@ if (playerLoginForm) {
     const username = document.getElementById('playerLoginUsername').value.trim();
     const password = document.getElementById('playerLoginPassword').value;
     const usernameKey = normalizeUsername(username);
+    const predefinedMember = findPredefinedMember(usernameKey);
 
     const adminAccount = adminAccounts.find((candidate) => {
       return normalizeUsername(candidate.username) === usernameKey && candidate.password === password;
     });
 
-    if (adminAccount) {
+    if (adminAccount && !predefinedMember) {
       currentAdmin = adminAccount.username;
       currentPlayer = adminAccount.username;
       localStorage.setItem(keys.adminSession, currentAdmin);
@@ -1195,20 +1206,79 @@ if (playerLoginForm) {
     }
 
     const players = loadPlayers();
+    const existingUser = players.find((player) => {
+      return normalizeUsername(player.username || '') === usernameKey;
+    });
+
+    if (!predefinedMember) {
+      alert('Pseudo non autorise. Utilise le pseudo d\'un membre predefini.');
+      return;
+    }
+
     const account = players.find((player) => {
       return normalizeUsername(player.username || '') === usernameKey && player.password === password;
     });
 
-    if (!account) {
-      alert('Identifiants invalides.');
+    if (account) {
+      if (account.forcePasswordChange) {
+        playerLoginForm.reset();
+        openPasswordReset(account.username);
+        return;
+      }
+
+      completePlayerLogin(account.username);
+      playerLoginForm.reset();
+      updateAdminUi();
+      updatePlayerUi();
+      renderTierBoard(currentTeamProfile);
+      renderComments();
+      renderAttendancePolls();
       return;
     }
 
-    currentAdmin = '';
-    localStorage.removeItem(keys.adminSession);
-    currentPlayer = account.username;
-    localStorage.setItem(keys.playerSession, currentPlayer);
-    playerLoginForm.reset();
+    const canForceResetWithTempCode = Boolean(
+      predefinedMember
+      && predefinedMember.tempCode === password
+      && (!existingUser || normalizeUsername(predefinedMember.username) === 'pinelancien')
+    );
+
+    if (canForceResetWithTempCode) {
+      savePlayerAccount(predefinedMember.username, password, true);
+      playerLoginForm.reset();
+      openPasswordReset(predefinedMember.username);
+      return;
+    }
+
+    alert('Identifiants invalides.');
+  });
+}
+
+if (playerResetForm) {
+  playerResetForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if (!pendingPasswordResetUser) return;
+
+    const newPasswordInput = document.getElementById('playerResetPassword');
+    const confirmPasswordInput = document.getElementById('playerResetPasswordConfirm');
+    const newPassword = newPasswordInput?.value || '';
+    const confirmPassword = confirmPasswordInput?.value || '';
+
+    if (newPassword.length < 4) {
+      alert('Le nouveau mot de passe doit faire au moins 4 caracteres.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      alert('La confirmation du mot de passe ne correspond pas.');
+      return;
+    }
+
+    savePlayerAccount(pendingPasswordResetUser, newPassword, false);
+    completePlayerLogin(pendingPasswordResetUser);
+    pendingPasswordResetUser = '';
+    playerResetForm.reset();
+
     updateAdminUi();
     updatePlayerUi();
     renderTierBoard(currentTeamProfile);
@@ -1222,12 +1292,34 @@ if (playerLogout) {
     currentAdmin = '';
     localStorage.removeItem(keys.adminSession);
     currentPlayer = '';
+    pendingPasswordResetUser = '';
     localStorage.removeItem(keys.playerSession);
+    if (playerResetForm) {
+      playerResetForm.reset();
+      playerResetForm.classList.add('hidden');
+    }
     updateAdminUi();
     updatePlayerUi();
     renderTierBoard(currentTeamProfile);
     renderComments();
     renderAttendancePolls();
+  });
+}
+
+if (openAuthGateBtn) {
+  openAuthGateBtn.addEventListener('click', () => {
+    if (authGate) {
+      authGate.open = true;
+      focusAuthLogin();
+    }
+  });
+}
+
+if (authGate) {
+  authGate.addEventListener('toggle', () => {
+    if (authGate.open) {
+      focusAuthLogin();
+    }
   });
 }
 
@@ -1303,3 +1395,4 @@ updateAdminUi();
 updatePlayerUi();
 renderComments();
 renderAttendancePolls();
+updateSiteAccessUi();

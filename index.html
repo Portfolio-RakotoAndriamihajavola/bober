@@ -53,16 +53,17 @@
               <h4>Portail de connexion</h4>
               <p class="muted">Un seul portail pour joueurs et admin.</p>
 
-              <form id="playerSignupForm" class="form-grid player-form">
-                <input type="text" id="playerSignupUsername" placeholder="Pseudo joueur" required>
-                <input type="password" id="playerSignupPassword" placeholder="Mot de passe" required>
-                <button type="submit">Créer un compte</button>
-              </form>
-
               <form id="playerLoginForm" class="form-grid player-form">
                 <input type="text" id="playerLoginUsername" placeholder="Pseudo" required>
                 <input type="password" id="playerLoginPassword" placeholder="Mot de passe" required>
                 <button type="submit">Connexion</button>
+              </form>
+
+              <form id="playerResetForm" class="form-grid player-form hidden">
+                <p id="playerResetHint" class="muted">Premiere connexion detectee. Redefinis ton mot de passe.</p>
+                <input type="password" id="playerResetPassword" placeholder="Nouveau mot de passe" required>
+                <input type="password" id="playerResetPasswordConfirm" placeholder="Confirmer le nouveau mot de passe" required>
+                <button type="submit">Valider le nouveau mot de passe</button>
               </form>
 
               <div id="playerConnected" class="player-connected hidden">
@@ -76,13 +77,11 @@
     </div>
   </div>
 
-  <div id="accessLock" class="access-lock hidden" aria-live="polite">
-    <div class="access-lock-card">
-      <h2>Connexion requise</h2>
-      <p>Connecte-toi pour accéder au contenu du playbook et aux outils d'equipe.</p>
-      <button type="button" id="openAuthGateBtn">Ouvrir la connexion</button>
-    </div>
-  </div>
+  <section id="siteLockBanner" class="site-lock hidden" aria-live="polite">
+    <h2>Acces reserve aux membres connectes</h2>
+    <p>Connectez-vous pour afficher les strategies, le roster et les informations de match.</p>
+    <button type="button" id="openAuthGateBtn" class="secondary-btn">Ouvrir la connexion</button>
+  </section>
 
   <header class="hero">
     <div class="hero-brand">

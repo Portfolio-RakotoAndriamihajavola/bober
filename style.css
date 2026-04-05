@@ -132,50 +132,6 @@ body {
   min-width: max-content;
 }
 
-.access-lock {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 72px;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  z-index: 95;
-  background: linear-gradient(180deg, rgba(5, 8, 7, 0.56), rgba(5, 8, 7, 0.78));
-}
-
-.access-lock-card {
-  width: min(94vw, 420px);
-  border: 1px solid var(--line-strong);
-  border-radius: 14px;
-  background: rgba(14, 21, 16, 0.96);
-  padding: 18px;
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.35);
-  text-align: center;
-}
-
-.access-lock-card h2 {
-  margin: 0 0 10px;
-  font-family: var(--valorant-font);
-  letter-spacing: 0.8px;
-}
-
-.access-lock-card p {
-  margin: 0 0 14px;
-  color: var(--muted);
-}
-
-.site-locked .hero,
-.site-locked main,
-.site-locked .brand-footer,
-.site-locked .top-left,
-.site-locked #topSearch {
-  pointer-events: none;
-  user-select: none;
-  filter: blur(2px);
-}
-
 #topSearch {
   width: 190px;
   border-radius: 999px;
@@ -275,10 +231,6 @@ body {
 }
 
 @media (max-width: 760px) {
-  .access-lock {
-    top: 62px;
-  }
-
   .auth-panel {
     right: 10px;
     top: 62px;
@@ -301,6 +253,37 @@ body {
 .hero {
   margin: 0 auto 18px;
   max-width: 1160px;
+}
+
+.site-lock {
+  max-width: 1160px;
+  margin: 0 auto 18px;
+  border: 1px solid var(--champion-soft);
+  border-radius: 14px;
+  background: rgba(15, 23, 17, 0.94);
+  padding: 16px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.site-lock h2 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-family: var(--valorant-font);
+  letter-spacing: 0.8px;
+}
+
+.site-lock p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+body.site-locked .hero,
+body.site-locked main,
+body.site-locked .brand-footer {
+  pointer-events: none;
+  user-select: none;
+  filter: blur(3px) grayscale(0.22);
+  opacity: 0.28;
 }
 
 .hero-brand {
