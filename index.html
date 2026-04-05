@@ -1,0 +1,457 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOBER Team Hub - Valorant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800&family=Rajdhani:wght@500;700&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-shape shape-a"></div>
+  <div class="bg-shape shape-b"></div>
+
+  <div class="top-strip">
+    <div class="top-strip-inner">
+      <div class="top-left">
+        <div class="strip-brand-wrap">
+          <img src="Logo bober.png" alt="Logo BOBER WIPR" class="strip-logo">
+          <p class="strip-brand">BOBER #WIPR</p>
+        </div>
+        <nav class="strip-choices" aria-label="Navigation principale">
+          <button class="tab active" data-tab="strategies">Strategies</button>
+          <button class="tab" data-tab="team">Team</button>
+          <button class="tab" data-tab="matches">Matchs</button>
+          <details class="menu-dropdown" id="mapMenu">
+            <summary id="mapMenuLabel">Map : Lotus</summary>
+            <div class="menu-list" role="menu" aria-label="Selection map">
+              <button type="button" class="menu-item" data-map-select="haven"><img class="menu-thumb" src="Haven.webp" alt="Haven"><span>Haven</span></button>
+              <button type="button" class="menu-item" data-map-select="fracture"><img class="menu-thumb" src="Fracture.webp" alt="Fracture"><span>Fracture</span></button>
+              <button type="button" class="menu-item active" data-map-select="lotus"><img class="menu-thumb" src="Lotus.webp" alt="Lotus"><span>Lotus</span></button>
+              <button type="button" class="menu-item" data-map-select="split"><img class="menu-thumb" src="Split.webp" alt="Split"><span>Split</span></button>
+              <button type="button" class="menu-item" data-map-select="bind"><img class="menu-thumb" src="Bind.webp" alt="Bind"><span>Bind</span></button>
+              <button type="button" class="menu-item" data-map-select="breeze"><img class="menu-thumb" src="Breeze.webp" alt="Breeze"><span>Breeze</span></button>
+              <button type="button" class="menu-item" data-map-select="abyss"><img class="menu-thumb" src="Abyss.webp" alt="Abyss"><span>Abyss</span></button>
+              <button type="button" class="menu-item" data-map-select="ascent"><img class="menu-thumb" src="Ascent.webp" alt="Ascent"><span>Ascent</span></button>
+              <button type="button" class="menu-item" data-map-select="icebox"><img class="menu-thumb" src="Icebox.webp" alt="Icebox"><span>Icebox</span></button>
+              <button type="button" class="menu-item" data-map-select="pearl"><img class="menu-thumb" src="Pearl.webp" alt="Pearl"><span>Pearl</span></button>
+              <button type="button" class="menu-item" data-map-select="sunset"><img class="menu-thumb" src="Sunset.webp" alt="Sunset"><span>Sunset</span></button>
+            </div>
+          </details>
+        </nav>
+      </div>
+      <div class="top-right">
+        <input type="search" id="topSearch" placeholder="Recherche séquence">
+        <details class="auth-gate" id="authGate">
+          <summary class="secondary-btn">Connexion</summary>
+          <div class="auth-panel">
+            <p id="topAuthState" class="muted">Non connecté</p>
+
+            <div class="player-box" id="playerBox">
+              <h4>Portail de connexion</h4>
+              <p class="muted">Un seul portail pour joueurs et admin.</p>
+
+              <form id="playerSignupForm" class="form-grid player-form">
+                <input type="text" id="playerSignupUsername" placeholder="Pseudo joueur" required>
+                <input type="password" id="playerSignupPassword" placeholder="Mot de passe" required>
+                <button type="submit">Créer un compte</button>
+              </form>
+
+              <form id="playerLoginForm" class="form-grid player-form">
+                <input type="text" id="playerLoginUsername" placeholder="Pseudo" required>
+                <input type="password" id="playerLoginPassword" placeholder="Mot de passe" required>
+                <button type="submit">Connexion</button>
+              </form>
+
+              <div id="playerConnected" class="player-connected hidden">
+                <span id="playerStatus" class="muted"></span>
+                <button type="button" id="playerLogout" class="secondary-btn">Déconnexion</button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-brand">
+      <div>
+        <h1>Playbook Team</h1>
+        <p class="subtitle">Séquences officielles et REX par map.</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="strategies" class="tab-panel active" aria-live="polite">
+      <div class="section-head">
+        <h2 id="stratTitle">Séquences - Lotus</h2>
+        <div class="strat-head-row">
+          <p>Vue claire des séquences attaque/défense. Les séquences sont faites pour s'enchaîner dans l'ordre.</p>
+          <a class="secondary-btn pdf-download-btn" href="LOTUS%20BOBER%20GUIDE.pdf" download="LOTUS BOBER GUIDE.pdf">Telecharger le guide PDF Lotus Bober</a>
+        </div>
+      </div>
+
+      <article class="map-showcase" id="mapShowcase">
+        <div class="map-media-wrap">
+          <img id="mapPreviewImage" src="Lotus.webp" alt="Aperçu de la map Lotus" class="map-media">
+          <div class="map-overlay">
+            <p class="map-label">Map Focus</p>
+            <h3 id="mapPreviewTitle">Lotus</h3>
+            <p id="mapPreviewSubtitle">Contrôle des timings de rotation et prises en deux temps.</p>
+          </div>
+        </div>
+      </article>
+
+      <div class="pill-row" id="stratFilter">
+        <button class="pill active" data-filter="attack">Attack</button>
+        <button class="pill" data-filter="defense">Defense</button>
+      </div>
+
+      <div class="strat-grid" id="stratGrid">
+        <article class="strat-card" data-map="lotus" data-type="attack">
+          <div class="flow-images">
+            <img src="HIT A - 1.png" alt="Lotus Hit A 1">
+            <div class="flow-arrow-wrap" aria-hidden="true">
+              <span class="flow-arrow-shape"></span>
+            </div>
+            <img src="HIT A - 2.png" alt="Lotus Hit A 2">
+          </div>
+          <div class="card-info">
+            <h3>Quand est-ce que l'on hit A ?</h3>
+            <p class="arrow-line">Open kill sur le fight main (+ avantage numérique = freeze)</p>
+            <p class="arrow-line">Danger aperçu en C</p>
+            <p class="arrow-line">Défense passive sur site</p>
+          </div>
+        </article>
+
+        <article class="strat-card" data-map="lotus" data-type="attack">
+          <img src="HIT B - 1.png" alt="Lotus Hit B 1" class="hit-b-image">
+          <div class="card-info">
+            <h3>Quand est-ce que l'on hit B ?</h3>
+            <p class="arrow-line">Sentinelle sur un des 2 sites</p>
+            <p class="arrow-line">Kill hobbit</p>
+            <p class="arrow-line">Manque de temps</p>
+          </div>
+        </article>
+
+        <article class="strat-card" data-map="lotus" data-type="attack">
+          <div class="flow-images flow-with-note">
+            <img src="HIT C - 1.png" alt="Lotus Fast C 1">
+            <div class="flow-mid-note">
+              <div class="flow-arrow-wrap" aria-hidden="true">
+                <span class="flow-arrow-shape"></span>
+              </div>
+              <p class="flow-comment">KJ reste main pour punir ceux qui traversent au bruit de la porte</p>
+            </div>
+            <img src="HIT C - 2.png" alt="Lotus Fast C 2">
+          </div>
+          <div class="card-info">
+            <h3>Quand est-ce que l'on hit C ?</h3>
+            <p class="arrow-line">Au pistol round</p>
+            <p class="arrow-line">Si on arrive à faire reculer Chamber</p>
+          </div>
+        </article>
+
+        <article class="strat-card" data-map="lotus" data-type="defense">
+          <img src="Defense A.png" alt="Defense Lotus Start">
+          <div class="card-info">
+            <h3>Setup fort en A</h3>
+          </div>
+        </article>
+
+        <article class="strat-card" data-map="lotus" data-type="defense">
+          <img src="Defense C.png" alt="Defense Lotus C">
+          <div class="card-info">
+            <h3>Setup fort en C</h3>
+          </div>
+        </article>
+      </div>
+
+      <div id="defensePrinciples" class="card-box defense-principles hidden">
+        <h3>Principes défense Lotus</h3>
+        <p class="defense-title">On joue les espaces de la map diagonalement et non horizontalement, comme sur Pearl.</p>
+        <div class="principles-list">
+          <p class="arrow-line">On doit être soit fort en A, soit fort en C, et toujours neutre en B.</p>
+          <p class="arrow-line">Rotation rapide sur les informations, puis dépôt d'un joueur dans la zone pour garder l'information d'une rotation tardive.</p>
+        </div>
+      </div>
+
+      <p id="emptyState" class="empty-state hidden">Pas encore de contenu pour cette map.</p>
+
+      <div class="card-box rex-inline">
+        <h3 id="commentMapTitle">REX - Lotus</h3>
+        <p class="muted">Commentaires liés à la map actuellement sélectionnée.</p>
+
+        <form id="commentForm" class="form-grid">
+          <input type="text" id="commentAuthor" placeholder="Pseudo" required>
+          <input type="text" id="commentMatch" placeholder="Match (ex: BOBER vs TEAMX - 13-9)" required>
+          <textarea id="commentText" rows="4" placeholder="Votre retour d'expérience..." required></textarea>
+          <button type="submit">Publier le commentaire</button>
+        </form>
+        <ul id="commentList" class="comment-list"></ul>
+      </div>
+    </section>
+
+    <section id="team" class="tab-panel" aria-live="polite">
+      <div class="section-head">
+        <h2>Team</h2>
+        <p>Présentation rapide du roster et des rôles principaux.</p>
+      </div>
+
+      <div class="team-layout">
+        <article class="card-box team-intro">
+          <h3>BOBER #WIPR</h3>
+          <p>
+            On joue autour d'une identité simple: discipline, timing et communication propre.
+            Clique sur un profil pour voir ses agents de confort et son histoire en rapide.
+          </p>
+        </article>
+
+        <div class="team-grid" id="teamGrid">
+          <button type="button" class="team-profile active" data-profile="bobe">
+            <span class="profile-badge">BO</span>
+            <span class="profile-name">BOBE</span>
+            <span class="profile-role">Propriétaire / Flex initiateur smokeur</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="limulesama">
+            <span class="profile-badge"><img class="profile-photo" src="pdp_limule.jpg" alt="Photo de profil Limulesama"></span>
+            <span class="profile-name">Limulesama</span>
+            <span class="profile-role">Capitaine / Dueliste</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="h1mmel">
+            <span class="profile-badge"><img class="profile-photo" src="pdp_h1mmel.png" alt="Photo de profil h1mmel"></span>
+            <span class="profile-name">h1mmel</span>
+            <span class="profile-role">IGL / Flex smokeur sentinel</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="quentin">
+            <span class="profile-badge">QU</span>
+            <span class="profile-name">Quentin</span>
+            <span class="profile-role">Shot caller / Flex initiateur smoker</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="warinen">
+            <span class="profile-badge"><img class="profile-photo" src="pdp_warinen.jpg" alt="Photo de profil Warinen"></span>
+            <span class="profile-name">Warinen</span>
+            <span class="profile-role">Flex initiateur smoker</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="pinelancien">
+            <span class="profile-badge">PA</span>
+            <span class="profile-name">Pinelancien</span>
+            <span class="profile-role">Flex initiateur smokeur / Sentinel</span>
+          </button>
+
+          <button type="button" class="team-profile" data-profile="korraze">
+            <span class="profile-badge"><img class="profile-photo" src="pdp_korrazé.webp" alt="Photo de profil kørraZé"></span>
+            <span class="profile-name">kørraZé</span>
+            <span class="profile-role">Flex dueliste smokeur</span>
+          </button>
+        </div>
+
+        <article class="card-box team-detail" id="teamDetail">
+          <h3 id="teamDetailName">BOBE</h3>
+          <p id="teamDetailRole" class="muted">Propriétaire / Flex initiateur smokeur</p>
+          <p id="teamDetailStory">
+            Propriétaire du projet, il cadre la vision d'équipe et assure la stabilité du roster.
+          </p>
+          <div>
+            <h4>Agents</h4>
+            <ul id="teamDetailAgents" class="team-agents"></ul>
+          </div>
+          <div class="team-tier-dnd" id="teamTierDnd">
+            <h4>Aperçu drag and drop</h4>
+            <div class="tier-grid">
+              <div class="tier-column">
+                <p class="tier-title">Pool</p>
+                <ul id="tierPool" class="team-tier-drop" data-tier="pool"></ul>
+              </div>
+              <div class="tier-column">
+                <p class="tier-title">Very comfortable</p>
+                <ul id="tierVeryComfortable" class="team-tier-drop" data-tier="very-comfortable"></ul>
+              </div>
+              <div class="tier-column">
+                <p class="tier-title">Comfortable</p>
+                <ul id="tierComfortable" class="team-tier-drop" data-tier="comfortable"></ul>
+              </div>
+              <div class="tier-column">
+                <p class="tier-title">Playable</p>
+                <ul id="tierPlayable" class="team-tier-drop" data-tier="playable"></ul>
+              </div>
+              <div class="tier-column">
+                <p class="tier-title">Not comfortable</p>
+                <ul id="tierNotComfortable" class="team-tier-drop" data-tier="not-comfortable"></ul>
+              </div>
+              <div class="tier-column">
+                <p class="tier-title">Helle nah</p>
+                <ul id="tierHelleNah" class="team-tier-drop" data-tier="helle-nah"></ul>
+              </div>
+            </div>
+          </div>
+          <div id="teamTierWrap" class="team-tier-wrap hidden">
+            <h4>Tier list agents (image)</h4>
+            <img id="teamTierImage" class="team-tier-image" src="" alt="Tier list agents du joueur sélectionné">
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="matches" class="tab-panel" aria-live="polite">
+      <div class="section-head">
+        <h2>Matchs</h2>
+        <a class="tracker-link" href="https://tracker.gg/valorant/premier/teams/c61a628f-25ff-478a-9a01-30d1d4bd6359" target="_blank" rel="noopener noreferrer">Voir les matches de l'equipe sur Tracker</a>
+        <p>Suivi des matchs joués et des dates à venir.</p>
+      </div>
+
+      <div class="match-layout">
+        <div class="card-box">
+          <h3>Calendrier jusqu'au 26 avril</h3>
+          <ul class="weekly-calendar">
+            <li class="completed">
+              <strong>Mercredi 18 mars</strong>
+              <span>19h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Jeudi 19 mars</strong>
+              <span>19h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Vendredi 20 mars</strong>
+              <span>20h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Samedi 21 mars</strong>
+              <span>20h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Dimanche 22 mars</strong>
+              <span>19h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Mercredi 25 mars</strong>
+              <span>19h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Jeudi 26 mars</strong>
+              <span>19h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Vendredi 27 mars</strong>
+              <span>20h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Samedi 28 mars</strong>
+              <span>20h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Dimanche 29 mars</strong>
+              <span>19h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Mercredi 1 avril</strong>
+              <span>19h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Jeudi 2 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li class="completed">
+              <strong>Vendredi 3 avril</strong>
+              <span>20h - prac</span>
+            </li>
+            <li class="completed">
+              <strong>Samedi 4 avril</strong>
+              <span>20h - offi</span>
+            </li>
+            <li>
+              <strong>Dimanche 5 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Mercredi 8 avril</strong>
+              <span>19h - prac</span>
+            </li>
+            <li>
+              <strong>Jeudi 9 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Vendredi 10 avril</strong>
+              <span>20h - prac</span>
+            </li>
+            <li>
+              <strong>Samedi 11 avril</strong>
+              <span>20h - offi</span>
+            </li>
+            <li>
+              <strong>Dimanche 12 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Mercredi 15 avril</strong>
+              <span>19h - prac</span>
+            </li>
+            <li>
+              <strong>Jeudi 16 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Vendredi 17 avril</strong>
+              <span>20h - prac</span>
+            </li>
+            <li>
+              <strong>Samedi 18 avril</strong>
+              <span>20h - offi</span>
+            </li>
+            <li>
+              <strong>Dimanche 19 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Mercredi 22 avril</strong>
+              <span>19h - prac</span>
+            </li>
+            <li>
+              <strong>Jeudi 23 avril</strong>
+              <span>19h - offi</span>
+            </li>
+            <li>
+              <strong>Vendredi 24 avril</strong>
+              <span>20h - prac</span>
+            </li>
+            <li>
+              <strong>Samedi 25 avril</strong>
+              <span>20h - offi</span>
+            </li>
+            <li>
+              <strong>Dimanche 26 avril</strong>
+              <span>19h - tournoi Up and Down</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="brand-footer" aria-label="Partenaires univers de jeu">
+    <div class="brand-badges">
+      <img src="logo valorant.png" alt="Logo Valorant" class="brand-logo">
+      <img src="logo riot.png" alt="Logo Riot Games" class="brand-logo riot-wide">
+    </div>
+  </footer>
+
+  <dialog id="imageModal">
+    <button id="closeModal" class="close-modal" aria-label="Fermer">x</button>
+    <img id="modalImage" src="" alt="Agrandissement de strat">
+    <p id="modalCaption"></p>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
