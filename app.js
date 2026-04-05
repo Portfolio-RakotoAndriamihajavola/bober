@@ -896,6 +896,7 @@ function renderAttendancePolls() {
 
   const polls = loadAttendancePolls();
   const currentUserKey = currentPlayer ? normalizeUsername(currentPlayer) : '';
+  const isAdmin = Boolean(currentAdmin);
 
   calendarItems.forEach((item) => {
     const eventId = getCalendarEventId(item);
@@ -934,6 +935,20 @@ function renderAttendancePolls() {
     const noCount = noVoters.length;
     const myVote = currentUserKey ? getVoteChoice(eventVotes[currentUserKey]) : '';
 
+    const renderVoteList = (targetChoice) => {
+      const targetVotes = voteEntries.filter(([, voteEntry]) => getVoteChoice(voteEntry) === targetChoice);
+      if (!targetVotes.length) return 'aucun';
+
+      return targetVotes.map(([userKey, voteEntry]) => {
+        const displayName = getVoteDisplayName(userKey, voteEntry);
+        if (!isAdmin) {
+          return displayName;
+        }
+
+        return `${displayName} <button type="button" class="admin-vote-btn" data-remove-vote="${userKey}" data-event-id="${eventId}">Supprimer</button>`;
+      }).join(', ');
+    };
+
     let pollNode = item.querySelector('.presence-poll');
     if (!pollNode) {
       pollNode = document.createElement('div');
@@ -959,10 +974,11 @@ function renderAttendancePolls() {
 
     detailsNode.innerHTML = `
       <p class="presence-details-title">Votes du jour</p>
+      ${isAdmin ? `<button type="button" class="admin-vote-btn admin-vote-clear-btn" data-clear-votes="${eventId}">Supprimer tous les votes</button>` : ''}
       <div class="presence-details-grid">
-        <p><strong>Oui:</strong> ${yesVoters.length ? yesVoters.join(', ') : 'aucun'}</p>
-        <p><strong>Peut-etre:</strong> ${maybeVoters.length ? maybeVoters.join(', ') : 'aucun'}</p>
-        <p><strong>Non:</strong> ${noVoters.length ? noVoters.join(', ') : 'aucun'}</p>
+        <p><strong>Oui:</strong> ${renderVoteList('yes')}</p>
+        <p><strong>Peut-etre:</strong> ${renderVoteList('maybe')}</p>
+        <p><strong>Non:</strong> ${renderVoteList('no')}</p>
       </div>
     `;
 
@@ -981,6 +997,44 @@ if (weeklyCalendar) {
   });
 
   weeklyCalendar.addEventListener('click', (event) => {
+    const removeVoteButton = event.target.closest('.admin-vote-btn[data-remove-vote]');
+    if (removeVoteButton) {
+      if (!currentAdmin) return;
+
+      const eventId = removeVoteButton.dataset.eventId;
+      const voteUserKey = removeVoteButton.dataset.removeVote;
+      if (!eventId || !voteUserKey) return;
+
+      const polls = loadAttendancePolls();
+      if (!polls[eventId] || typeof polls[eventId] !== 'object') return;
+
+      delete polls[eventId][voteUserKey];
+
+      if (!Object.keys(polls[eventId]).length) {
+        delete polls[eventId];
+      }
+
+      saveAttendancePolls(polls);
+      renderAttendancePolls();
+      return;
+    }
+
+    const clearVotesButton = event.target.closest('.admin-vote-btn[data-clear-votes]');
+    if (clearVotesButton) {
+      if (!currentAdmin) return;
+
+      const eventId = clearVotesButton.dataset.clearVotes;
+      if (!eventId) return;
+
+      const polls = loadAttendancePolls();
+      if (!polls[eventId]) return;
+
+      delete polls[eventId];
+      saveAttendancePolls(polls);
+      renderAttendancePolls();
+      return;
+    }
+
     const button = event.target.closest('.presence-btn');
     if (button) {
       if (!currentPlayer) {
