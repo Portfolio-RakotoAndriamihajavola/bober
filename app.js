@@ -77,6 +77,8 @@ const keys = {
 
 const syncSettings = {
   endpoint: 'https://gaauvofzcibtwzytapjs.supabase.co/functions/v1/sync',
+  // Add your Supabase anon key if your Edge Function requires auth headers.
+  anonKey: 'sb_publishable_y4MlrLy03_BQCmZI1vU1mA_HnLtUAp-',
   pollMs: 3000,
   enabled: window.location.protocol === 'http:' || window.location.protocol === 'https:',
   syncedKeys: new Set([
@@ -92,6 +94,7 @@ const syncSettings = {
 let sharedSyncVersion = 0;
 let sharedSyncStopped = false;
 let isApplyingRemoteState = false;
+let hasWarnedAuthHeaders = false;
 
 function isSyncedKey(key) {
   return syncSettings.syncedKeys.has(key);
@@ -111,15 +114,35 @@ function readLocalJson(key, fallback) {
   }
 }
 
+function buildSyncHeaders(extraHeaders = {}) {
+  const headers = {
+    ...extraHeaders
+  };
+
+  if (syncSettings.anonKey) {
+    headers.apikey = syncSettings.anonKey;
+    headers.Authorization = `Bearer ${syncSettings.anonKey}`;
+  }
+
+  return headers;
+}
+
+function handleSyncErrorStatus(response) {
+  if ((response.status === 401 || response.status === 403) && !hasWarnedAuthHeaders) {
+    hasWarnedAuthHeaders = true;
+    console.warn('Sync blocked (401/403). Add syncSettings.anonKey in app.js or disable JWT verification on the Supabase Edge Function.');
+  }
+}
+
 async function pushSharedValue(key, value) {
   if (!syncSettings.enabled || sharedSyncStopped || isApplyingRemoteState || !isSyncedKey(key)) return;
 
   try {
     const response = await fetch(syncSettings.endpoint, {
       method: 'POST',
-      headers: {
+      headers: buildSyncHeaders({
         'Content-Type': 'application/json'
-      },
+      }),
       body: JSON.stringify({ key, value })
     });
 
@@ -129,6 +152,7 @@ async function pushSharedValue(key, value) {
     }
 
     if (!response.ok) {
+      handleSyncErrorStatus(response);
       return;
     }
 
@@ -162,9 +186,9 @@ async function pullSharedState() {
   try {
     const response = await fetch(syncSettings.endpoint, {
       method: 'GET',
-      headers: {
+      headers: buildSyncHeaders({
         'Accept': 'application/json'
-      }
+      })
     });
 
     if (response.status === 404) {
@@ -172,7 +196,10 @@ async function pullSharedState() {
       return false;
     }
 
-    if (!response.ok) return false;
+    if (!response.ok) {
+      handleSyncErrorStatus(response);
+      return false;
+    }
 
     const payload = await response.json();
     if (!payload || typeof payload !== 'object') return false;
