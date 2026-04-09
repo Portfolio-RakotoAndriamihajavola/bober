@@ -69,6 +69,7 @@ const keys = {
   adminSession: 'boberAdminSession',
   players: 'boberPlayerAccounts',
   playerSession: 'boberPlayerSession',
+  sessionExpiresAt: 'boberSessionExpiresAt',
   stratMode: 'boberStrategyMode',
   teamTierState: 'boberTeamTierState',
   activeTab: 'boberActiveTab',
@@ -954,14 +955,90 @@ const playerStatus = document.getElementById('playerStatus');
 const playerLogout = document.getElementById('playerLogout');
 const commentAuthorInput = document.getElementById('commentAuthor');
 
-let currentAdmin = localStorage.getItem(keys.adminSession) || '';
-let currentPlayer = localStorage.getItem(keys.playerSession) || '';
-let pendingPasswordResetUser = '';
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 
-if (currentAdmin && !currentPlayer) {
-  currentPlayer = currentAdmin;
-  localStorage.setItem(keys.playerSession, currentPlayer);
+function clearStoredSession() {
+  localStorage.removeItem(keys.adminSession);
+  localStorage.removeItem(keys.playerSession);
+  localStorage.removeItem(keys.sessionExpiresAt);
 }
+
+function getSessionExpiresAt() {
+  const raw = localStorage.getItem(keys.sessionExpiresAt);
+  if (!raw) return 0;
+
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function isStoredSessionValid() {
+  const expiresAt = getSessionExpiresAt();
+  return expiresAt > Date.now();
+}
+
+function restoreStoredSession() {
+  if (!isStoredSessionValid()) {
+    clearStoredSession();
+    return { admin: '', player: '' };
+  }
+
+  const restoredAdmin = localStorage.getItem(keys.adminSession) || '';
+  let restoredPlayer = localStorage.getItem(keys.playerSession) || '';
+
+  if (restoredAdmin && !restoredPlayer) {
+    restoredPlayer = restoredAdmin;
+    localStorage.setItem(keys.playerSession, restoredPlayer);
+  }
+
+  return {
+    admin: restoredAdmin,
+    player: restoredPlayer
+  };
+}
+
+function startSession(username, isAdmin = false) {
+  const expiresAt = Date.now() + SESSION_DURATION_MS;
+
+  currentAdmin = isAdmin ? username : '';
+  currentPlayer = username;
+
+  if (isAdmin) {
+    localStorage.setItem(keys.adminSession, currentAdmin);
+  } else {
+    localStorage.removeItem(keys.adminSession);
+  }
+
+  localStorage.setItem(keys.playerSession, currentPlayer);
+  localStorage.setItem(keys.sessionExpiresAt, String(expiresAt));
+}
+
+function clearInMemorySession() {
+  currentAdmin = '';
+  currentPlayer = '';
+  pendingPasswordResetUser = '';
+}
+
+function forceLogoutExpiredSession() {
+  clearStoredSession();
+  clearInMemorySession();
+
+  if (playerResetForm) {
+    playerResetForm.reset();
+    playerResetForm.classList.add('hidden');
+  }
+
+  updateAdminUi();
+  updatePlayerUi();
+  renderTierBoard(currentTeamProfile);
+  renderComments();
+  renderAttendancePolls();
+}
+
+const restoredSession = restoreStoredSession();
+
+let currentAdmin = restoredSession.admin;
+let currentPlayer = restoredSession.player;
+let pendingPasswordResetUser = '';
 
 function normalizeUsername(value) {
   return value.trim().toLowerCase();
@@ -1305,10 +1382,7 @@ function openPasswordReset(username) {
 }
 
 function completePlayerLogin(username) {
-  currentAdmin = '';
-  localStorage.removeItem(keys.adminSession);
-  currentPlayer = username;
-  localStorage.setItem(keys.playerSession, currentPlayer);
+  startSession(username, false);
 }
 
 function updatePlayerUi() {
@@ -1414,10 +1488,7 @@ if (playerLoginForm) {
     });
 
     if (adminAccount) {
-      currentAdmin = adminAccount.username;
-      currentPlayer = adminAccount.username;
-      localStorage.setItem(keys.adminSession, currentAdmin);
-      localStorage.setItem(keys.playerSession, currentPlayer);
+      startSession(adminAccount.username, true);
       playerLoginForm.reset();
       updateAdminUi();
       updatePlayerUi();
@@ -1461,7 +1532,7 @@ if (playerLoginForm) {
     const canForceResetWithTempCode = Boolean(
       predefinedMember
       && predefinedMember.tempCode === password
-      && (!existingUser || normalizeUsername(predefinedMember.username) === 'pinelancien')
+      && !existingUser
     );
 
     if (canForceResetWithTempCode) {
@@ -1511,11 +1582,8 @@ if (playerResetForm) {
 
 if (playerLogout) {
   playerLogout.addEventListener('click', () => {
-    currentAdmin = '';
-    localStorage.removeItem(keys.adminSession);
-    currentPlayer = '';
-    pendingPasswordResetUser = '';
-    localStorage.removeItem(keys.playerSession);
+    clearStoredSession();
+    clearInMemorySession();
     if (playerResetForm) {
       playerResetForm.reset();
       playerResetForm.classList.add('hidden');
@@ -1527,6 +1595,13 @@ if (playerLogout) {
     renderAttendancePolls();
   });
 }
+
+window.setInterval(() => {
+  if (!currentPlayer && !currentAdmin) return;
+  if (isStoredSessionValid()) return;
+
+  forceLogoutExpiredSession();
+}, 60 * 1000);
 
 if (openAuthGateBtn) {
   openAuthGateBtn.addEventListener('click', () => {
