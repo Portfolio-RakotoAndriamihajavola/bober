@@ -78,7 +78,7 @@ const keys = {
 const syncSettings = {
   endpoint: 'https://gaauvofzcibtwzytapjs.supabase.co/functions/v1/sync',
   // Add your Supabase anon key if your Edge Function requires auth headers.
-  anonKey: 'sb_publishable_y4MlrLy03_BQCmZI1vU1mA_HnLtUAp-',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhYXV2b2Z6Y2lidHd6eXRhcGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTkyMzksImV4cCI6MjA5MTMzNTIzOX0.MK5vDic5VsjC7LM8nmeTmNUd-zbQf64BO54qyJ_D47o',
   pollMs: 3000,
   enabled: window.location.protocol === 'http:' || window.location.protocol === 'https:',
   syncedKeys: new Set([
