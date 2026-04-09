@@ -1001,12 +1001,8 @@ function getVoteDisplayName(userKey, voteEntry) {
   return userKey;
 }
 
-function getCalendarEventId(item) {
+function getLegacyCalendarEventId(item) {
   if (!item) return '';
-
-  if (item.dataset.eventId) {
-    return item.dataset.eventId;
-  }
 
   const label = item.querySelector('strong')?.textContent?.trim() || '';
   const generated = label
@@ -1015,6 +1011,20 @@ function getCalendarEventId(item) {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+
+  return generated;
+}
+
+function getCalendarEventId(item) {
+  if (!item) return '';
+
+  if (item.dataset.eventId) {
+    return item.dataset.eventId;
+  }
+
+  const siblings = item.parentElement ? Array.from(item.parentElement.children) : [];
+  const index = siblings.indexOf(item);
+  const generated = index >= 0 ? `event-${index + 1}` : getLegacyCalendarEventId(item);
 
   item.dataset.eventId = generated || `event-${Date.now()}`;
   return item.dataset.eventId;
@@ -1063,7 +1073,10 @@ function renderAttendancePolls() {
       item.prepend(mainInfo);
     }
 
-    const eventVotes = polls[eventId] && typeof polls[eventId] === 'object' ? polls[eventId] : {};
+    const legacyEventId = getLegacyCalendarEventId(item);
+    const eventVotes = polls[eventId] && typeof polls[eventId] === 'object'
+      ? polls[eventId]
+      : (legacyEventId && polls[legacyEventId] && typeof polls[legacyEventId] === 'object' ? polls[legacyEventId] : {});
     const voteEntries = Object.entries(eventVotes);
     const yesVoters = [];
     const maybeVoters = [];
@@ -1192,6 +1205,7 @@ if (weeklyCalendar) {
 
       const eventItem = button.closest('li');
       const eventId = getCalendarEventId(eventItem);
+      const legacyEventId = getLegacyCalendarEventId(eventItem);
       const choice = button.dataset.choice;
       const userKey = normalizeUsername(currentPlayer);
 
@@ -1199,7 +1213,14 @@ if (weeklyCalendar) {
 
       const polls = loadAttendancePolls();
       if (!polls[eventId] || typeof polls[eventId] !== 'object') {
-        polls[eventId] = {};
+        if (legacyEventId && polls[legacyEventId] && typeof polls[legacyEventId] === 'object') {
+          polls[eventId] = polls[legacyEventId];
+          if (legacyEventId !== eventId) {
+            delete polls[legacyEventId];
+          }
+        } else {
+          polls[eventId] = {};
+        }
       }
 
       const existingChoice = getVoteChoice(polls[eventId][userKey]);
