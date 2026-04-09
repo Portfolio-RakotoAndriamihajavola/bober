@@ -80,7 +80,7 @@ const syncSettings = {
   // Add your Supabase anon key if your Edge Function requires auth headers.
   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdhYXV2b2Z6Y2lidHd6eXRhcGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTkyMzksImV4cCI6MjA5MTMzNTIzOX0.MK5vDic5VsjC7LM8nmeTmNUd-zbQf64BO54qyJ_D47o',
   pollMs: 3000,
-  enabled: window.location.protocol === 'http:' || window.location.protocol === 'https:',
+  enabled: true,
   syncedKeys: new Set([
     keys.played,
     keys.upcoming,
