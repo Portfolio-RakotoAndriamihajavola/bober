@@ -221,7 +221,7 @@ function scheduleSharedPush(key, value) {
 }
 
 const adminAccounts = [
-  { username: 'limulesama', password: 'Honolulu15691569' },
+  { username: 'limulesama', password: 'Honolulu1569.' },
   { username: 'coach', password: 'wiprcoach' }
 ];
 
