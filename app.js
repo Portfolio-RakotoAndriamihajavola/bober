@@ -1338,7 +1338,7 @@ function findPredefinedMember(usernameKey) {
   return predefinedMemberCodes.find((member) => normalizeUsername(member.username) === usernameKey) || null;
 }
 
-function savePlayerAccount(username, password, forcePasswordChange = false) {
+function savePlayerAccount(username, password, forcePasswordChange = true) {
   const players = loadPlayers();
   const usernameKey = normalizeUsername(username);
   const existingIndex = players.findIndex((player) => normalizeUsername(player.username || '') === usernameKey);
