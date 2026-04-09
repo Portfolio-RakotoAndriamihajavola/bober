@@ -75,6 +75,123 @@ const keys = {
   attendancePolls: 'boberAttendancePolls'
 };
 
+const syncSettings = {
+  endpoint: 'https://gaauvofzcibtwzytapjs.supabase.co/functions/v1/sync',
+  pollMs: 3000,
+  enabled: window.location.protocol === 'http:' || window.location.protocol === 'https:',
+  syncedKeys: new Set([
+    keys.played,
+    keys.upcoming,
+    keys.comments,
+    keys.players,
+    keys.teamTierState,
+    keys.attendancePolls
+  ])
+};
+
+let sharedSyncVersion = 0;
+let sharedSyncStopped = false;
+let isApplyingRemoteState = false;
+
+function isSyncedKey(key) {
+  return syncSettings.syncedKeys.has(key);
+}
+
+function writeLocalJson(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+function readLocalJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+}
+
+async function pushSharedValue(key, value) {
+  if (!syncSettings.enabled || sharedSyncStopped || isApplyingRemoteState || !isSyncedKey(key)) return;
+
+  try {
+    const response = await fetch(syncSettings.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ key, value })
+    });
+
+    if (response.status === 404) {
+      sharedSyncStopped = true;
+      return;
+    }
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+    if (payload && typeof payload.version === 'number') {
+      sharedSyncVersion = Math.max(sharedSyncVersion, payload.version);
+    }
+  } catch {
+    // Silent fallback to local mode.
+  }
+}
+
+function applySharedState(state) {
+  if (!state || typeof state !== 'object') return;
+
+  isApplyingRemoteState = true;
+
+  try {
+    syncSettings.syncedKeys.forEach((key) => {
+      if (!Object.prototype.hasOwnProperty.call(state, key)) return;
+      writeLocalJson(key, state[key]);
+    });
+  } finally {
+    isApplyingRemoteState = false;
+  }
+}
+
+async function pullSharedState() {
+  if (!syncSettings.enabled || sharedSyncStopped) return false;
+
+  try {
+    const response = await fetch(syncSettings.endpoint, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.status === 404) {
+      sharedSyncStopped = true;
+      return false;
+    }
+
+    if (!response.ok) return false;
+
+    const payload = await response.json();
+    if (!payload || typeof payload !== 'object') return false;
+
+    const nextVersion = typeof payload.version === 'number' ? payload.version : 0;
+    if (nextVersion <= sharedSyncVersion) return false;
+
+    sharedSyncVersion = nextVersion;
+    applySharedState(payload.data || {});
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function scheduleSharedPush(key, value) {
+  void pushSharedValue(key, value);
+}
+
 const adminAccounts = [
   { username: 'limulesama', password: '1569' },
   { username: 'coach', password: 'wiprcoach' }
@@ -90,11 +207,13 @@ const predefinedMemberCodes = [
 ];
 
 function saveData(key, data) {
-  localStorage.setItem(key, JSON.stringify(data));
+  writeLocalJson(key, data);
+  scheduleSharedPush(key, data);
 }
 
 function loadData(key) {
-  return JSON.parse(localStorage.getItem(key) || '[]');
+  const data = readLocalJson(key, []);
+  return Array.isArray(data) ? data : [];
 }
 
 function setActiveTab(tabKey) {
@@ -328,7 +447,8 @@ function loadTierStateData() {
 }
 
 function saveTierStateData(data) {
-  localStorage.setItem(keys.teamTierState, JSON.stringify(data));
+  writeLocalJson(keys.teamTierState, data);
+  scheduleSharedPush(keys.teamTierState, data);
 }
 
 function getTierOwnerKey() {
@@ -833,7 +953,8 @@ function loadAttendancePolls() {
 }
 
 function saveAttendancePolls(data) {
-  localStorage.setItem(keys.attendancePolls, JSON.stringify(data));
+  writeLocalJson(keys.attendancePolls, data);
+  scheduleSharedPush(keys.attendancePolls, data);
 }
 
 let hideCompletedDays = true;
@@ -1439,6 +1560,32 @@ commentForm.addEventListener('submit', (event) => {
   renderComments();
 });
 
+function rerenderAfterSharedSync() {
+  applyStratFilters();
+  renderPlayed();
+  renderUpcoming();
+  renderCommentMatchOptions();
+  renderComments();
+  renderAttendancePolls();
+  renderTierBoard(currentTeamProfile);
+}
+
+function startSharedSyncPolling() {
+  if (!syncSettings.enabled || sharedSyncStopped) return;
+
+  const runSync = async () => {
+    const hasRemoteUpdate = await pullSharedState();
+    if (hasRemoteUpdate) {
+      rerenderAfterSharedSync();
+    }
+  };
+
+  void runSync();
+  window.setInterval(() => {
+    void runSync();
+  }, syncSettings.pollMs);
+}
+
 renderPlayed();
 renderUpcoming();
 renderCommentMatchOptions();
@@ -1449,3 +1596,4 @@ updatePlayerUi();
 renderComments();
 renderAttendancePolls();
 updateSiteAccessUi();
+startSharedSyncPolling();

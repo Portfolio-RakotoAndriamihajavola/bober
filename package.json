@@ -1,0 +1,9 @@
+{
+  "name": "bober-team-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BOBER Team Hub local server with shared sync",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
