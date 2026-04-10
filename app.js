@@ -436,7 +436,7 @@ const teamProfilesData = {
     name: 'kørraZé',
     role: 'Flex dueliste smokeur',
     story: 'Arrivé plus tard dans le groupe, c\'est un duelliste en apprentissage du jeu en équipe. Très solide mécaniquement, avec un fort potentiel (radiant en devenir).',
-    agents: ['Phoenix', 'Yoru', 'Viper']
+    agents: ['Jett', 'Neon', 'Omen']
   }
 };
 
@@ -669,13 +669,21 @@ function renderTierBoard(profileKey = currentTeamProfile) {
 tierDrops.forEach((dropZone) => {
   dropZone.addEventListener('dragover', (event) => {
     event.preventDefault();
+    dropZone.classList.add('drag-over');
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'move';
     }
   });
 
+  dropZone.addEventListener('dragleave', (event) => {
+    const relatedTarget = event.relatedTarget;
+    if (relatedTarget && dropZone.contains(relatedTarget)) return;
+    dropZone.classList.remove('drag-over');
+  });
+
   dropZone.addEventListener('drop', (event) => {
     event.preventDefault();
+    dropZone.classList.remove('drag-over');
     let itemToMove = draggedTierItem;
 
     if (!itemToMove && event.dataTransfer) {
@@ -699,6 +707,7 @@ tierDrops.forEach((dropZone) => {
     if (event.target.closest('.tier-agent-item')) return;
 
     selectedTierItem.classList.remove('selected');
+    dropZone.classList.remove('drag-over');
     dropZone.appendChild(selectedTierItem);
     selectedTierItem = null;
     saveCurrentTierBoard();
@@ -1324,7 +1333,8 @@ function refreshCompletedCalendarDays(calendarItems) {
   todayStart.setHours(0, 0, 0, 0);
 
   calendarItems.forEach((item) => {
-    const label = item.querySelector(':scope > strong')?.textContent || '';
+    const labelNode = item.querySelector('.calendar-main-info > strong') || item.querySelector(':scope > strong');
+    const label = labelNode?.textContent || '';
     const eventDate = parseCalendarLabelDate(label);
     if (!eventDate) return;
 

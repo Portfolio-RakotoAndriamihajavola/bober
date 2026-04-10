@@ -1047,15 +1047,38 @@ main {
   font-size: 12px;
   letter-spacing: 0.4px;
   color: #c5d7bf;
+  text-align: center;
 }
 
 .team-tier-drop {
   min-height: 48px;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 6px;
   display: grid;
   gap: 6px;
+  border: 1px dashed rgba(149, 226, 77, 0.28);
+  border-radius: 8px;
+  background: rgba(7, 12, 9, 0.45);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.team-tier-drop:empty::before {
+  content: 'Deposer ici';
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  border: 1px dashed rgba(149, 226, 77, 0.2);
+  border-radius: 6px;
+  color: rgba(212, 225, 249, 0.62);
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+
+.team-tier-drop.drag-over {
+  border-color: #d6af3f;
+  background: rgba(40, 33, 16, 0.34);
+  box-shadow: 0 0 0 2px rgba(214, 175, 63, 0.25) inset;
 }
 
 .tier-agent-item {
