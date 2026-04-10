@@ -55,14 +55,23 @@
 
               <form id="playerLoginForm" class="form-grid player-form">
                 <input type="text" id="playerLoginUsername" placeholder="Pseudo" required>
-                <input type="password" id="playerLoginPassword" placeholder="Mot de passe" required>
+                <div class="password-input-wrap">
+                  <input type="password" id="playerLoginPassword" placeholder="Mot de passe" required>
+                  <button type="button" class="password-toggle" data-toggle-password="playerLoginPassword" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">👁</button>
+                </div>
                 <button type="submit">Connexion</button>
               </form>
 
               <form id="playerResetForm" class="form-grid player-form hidden">
                 <p id="playerResetHint" class="muted">Premiere connexion detectee. Redefinis ton mot de passe.</p>
-                <input type="password" id="playerResetPassword" placeholder="Nouveau mot de passe" required>
-                <input type="password" id="playerResetPasswordConfirm" placeholder="Confirmer le nouveau mot de passe" required>
+                <div class="password-input-wrap">
+                  <input type="password" id="playerResetPassword" placeholder="Nouveau mot de passe" required>
+                  <button type="button" class="password-toggle" data-toggle-password="playerResetPassword" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">👁</button>
+                </div>
+                <div class="password-input-wrap">
+                  <input type="password" id="playerResetPasswordConfirm" placeholder="Confirmer le nouveau mot de passe" required>
+                  <button type="button" class="password-toggle" data-toggle-password="playerResetPasswordConfirm" aria-label="Afficher le mot de passe" title="Afficher le mot de passe">👁</button>
+                </div>
                 <button type="submit">Valider le nouveau mot de passe</button>
               </form>
 
@@ -187,6 +196,49 @@
         </div>
       </div>
 
+      <div id="defensePrinciplesSplit" class="card-box defense-principles hidden">
+        <h3>Séquence attaque Split — Hit A Rampe</h3>
+        <p class="defense-title">Lecture de la pression rampe et décision collective : tenir ou rediriger en B.</p>
+
+        <div class="split-flow-block">
+
+          <div class="split-flow-row">
+            <div class="split-flow-img-wrap">
+              <img src="split - hit A - 1.png" alt="Split Hit A séquence 1">
+              <p class="split-flow-caption"><strong>Séq. 1</strong> — Dog fade</p>
+            </div>
+            <div class="flow-arrow-wrap" aria-hidden="true"><span class="flow-arrow-shape"></span></div>
+            <div class="split-flow-img-wrap">
+              <img src="split - hit A - 2.png" alt="Split Hit A séquence 2">
+              <p class="split-flow-caption"><strong>Séq. 2</strong> — Flash Sky + Flash Omen + dash Waylay</p>
+            </div>
+            <div class="flow-arrow-wrap" aria-hidden="true"><span class="flow-arrow-shape"></span></div>
+            <div class="split-flow-img-wrap">
+              <img src="split - hit A - 3.png" alt="Split Hit A séquence 3">
+              <p class="split-flow-caption"><strong>Séq. 3</strong> — Avancée rampe, Skye surveille les arrières</p>
+            </div>
+          </div>
+
+          <div class="split-flow-row">
+            <div class="split-flow-img-wrap">
+              <img src="split - hit A - 4.png" alt="Split Hit A séquence 4">
+              <p class="split-flow-caption"><strong>Séq. 4</strong> — Décision : tenir ou rediriger en B</p>
+            </div>
+            <div class="flow-arrow-wrap" aria-hidden="true"><span class="flow-arrow-shape"></span></div>
+            <div class="split-flow-img-wrap">
+              <img src="split - hit A - 5.png" alt="Split Hit A séquence 5">
+              <p class="split-flow-caption"><strong>Séq. 5</strong> — 2e flash Skye + reveal Fade</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="principles-list" style="margin-top: 12px;">
+          <p class="arrow-line"><strong>Remarque Viper</strong> — Viper pose son poison wall en A en routine, puis sprint en B pour contrôler le B main instantanément.</p>
+          <p class="arrow-line"><strong>Remarque Omen</strong> — Omen contrôle également le mid après la flash.</p>
+        </div>
+      </div>
+
       <p id="emptyState" class="empty-state hidden">Pas encore de contenu pour cette map.</p>
 
       <div class="card-box rex-inline">
@@ -195,7 +247,11 @@
 
         <form id="commentForm" class="form-grid">
           <input type="text" id="commentAuthor" placeholder="Pseudo" required>
-          <input type="text" id="commentMatch" placeholder="Match (ex: BOBER vs TEAMX - 13-9)" required>
+          <div id="commentMatchDropdown" class="comment-match-dropdown">
+            <button type="button" id="commentMatchToggle" class="comment-match-toggle">Choisis un match enregistre</button>
+            <div id="commentMatchMenu" class="comment-match-menu hidden"></div>
+            <input type="hidden" id="commentMatch" required>
+          </div>
           <textarea id="commentText" rows="4" placeholder="Votre retour d'expérience..." required></textarea>
           <button type="submit">Publier le commentaire</button>
         </form>
@@ -317,6 +373,47 @@
       </div>
 
       <div class="match-layout">
+        <div class="card-box">
+          <h3>Ajouter un match joue</h3>
+          <form id="playedForm" class="form-grid">
+            <input type="text" id="playedOpponent" placeholder="Nom de l'equipe adverse" required>
+            <input type="date" id="playedDate" required>
+            <select id="playedMap" required>
+              <option value="">Selectionner une map</option>
+              <option value="Abyss">Abyss</option>
+              <option value="Ascent">Ascent</option>
+              <option value="Bind">Bind</option>
+              <option value="Breeze">Breeze</option>
+              <option value="Fracture">Fracture</option>
+              <option value="Haven">Haven</option>
+              <option value="Icebox">Icebox</option>
+              <option value="Lotus">Lotus</option>
+              <option value="Pearl">Pearl</option>
+              <option value="Split">Split</option>
+              <option value="Sunset">Sunset</option>
+            </select>
+            <select id="playedType" required>
+              <option value="">Type de match</option>
+              <option value="officiel">Officiel</option>
+              <option value="pracc">Pracc</option>
+            </select>
+            <select id="playedOpponentElo" required>
+              <option value="">ELO moyen equipe adverse</option>
+              <option value="Iron">Iron</option>
+              <option value="Bronze">Bronze</option>
+              <option value="Silver">Silver</option>
+              <option value="Gold">Gold</option>
+              <option value="Platinum">Platinum</option>
+              <option value="Diamond">Diamond</option>
+              <option value="Ascendant">Ascendant</option>
+              <option value="Immortal">Immortal</option>
+              <option value="Radiant">Radiant</option>
+            </select>
+            <button type="submit">Ajouter le match</button>
+          </form>
+          <ul id="playedList" class="list"></ul>
+        </div>
+
         <div class="card-box">
           <h3>Calendrier jusqu'au 26 avril</h3>
           <ul class="weekly-calendar">
@@ -458,6 +555,51 @@
     <img id="modalImage" src="" alt="Agrandissement de strat">
     <p id="modalCaption"></p>
   </dialog>
+
+  <div id="matchEditModal" class="match-edit-modal hidden" role="dialog" aria-modal="true" aria-labelledby="matchEditTitle">
+    <div class="match-edit-card">
+      <h3 id="matchEditTitle">Modifier un match joue</h3>
+      <form id="matchEditForm" class="form-grid">
+        <input type="text" id="matchEditOpponent" placeholder="Nom de l'equipe adverse" required>
+        <input type="date" id="matchEditDate" required>
+        <select id="matchEditMap" required>
+          <option value="">Selectionner une map</option>
+          <option value="Abyss">Abyss</option>
+          <option value="Ascent">Ascent</option>
+          <option value="Bind">Bind</option>
+          <option value="Breeze">Breeze</option>
+          <option value="Fracture">Fracture</option>
+          <option value="Haven">Haven</option>
+          <option value="Icebox">Icebox</option>
+          <option value="Lotus">Lotus</option>
+          <option value="Pearl">Pearl</option>
+          <option value="Split">Split</option>
+          <option value="Sunset">Sunset</option>
+        </select>
+        <select id="matchEditType" required>
+          <option value="">Type de match</option>
+          <option value="officiel">Officiel</option>
+          <option value="pracc">Pracc</option>
+        </select>
+        <select id="matchEditElo" required>
+          <option value="">ELO moyen equipe adverse</option>
+          <option value="Iron">Iron</option>
+          <option value="Bronze">Bronze</option>
+          <option value="Silver">Silver</option>
+          <option value="Gold">Gold</option>
+          <option value="Platinum">Platinum</option>
+          <option value="Diamond">Diamond</option>
+          <option value="Ascendant">Ascendant</option>
+          <option value="Immortal">Immortal</option>
+          <option value="Radiant">Radiant</option>
+        </select>
+        <div class="match-edit-actions">
+          <button type="submit">Enregistrer</button>
+          <button type="button" id="matchEditCancel" class="secondary-btn">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

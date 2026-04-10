@@ -71,6 +71,7 @@ const keys = {
   playerSession: 'boberPlayerSession',
   sessionExpiresAt: 'boberSessionExpiresAt',
   stratMode: 'boberStrategyMode',
+  currentMap: 'boberCurrentMap',
   teamTierState: 'boberTeamTierState',
   activeTab: 'boberActiveTab',
   attendancePolls: 'boberAttendancePolls'
@@ -285,6 +286,7 @@ const mapPreviewTitle = document.getElementById('mapPreviewTitle');
 const mapPreviewSubtitle = document.getElementById('mapPreviewSubtitle');
 const emptyState = document.getElementById('emptyState');
 const defensePrinciples = document.getElementById('defensePrinciples');
+const defensePrinciplesSplit = document.getElementById('defensePrinciplesSplit');
 const topSearch = document.getElementById('topSearch');
 const topAuthState = document.getElementById('topAuthState');
 const siteLockBanner = document.getElementById('siteLockBanner');
@@ -304,13 +306,16 @@ let selectedTierItem = null;
 let currentTeamProfile = 'bobe';
 
 let currentTypeFilter = 'attack';
-let currentMap = 'lotus';
 let currentSearch = '';
 
 const storedMode = localStorage.getItem(keys.stratMode);
 if (storedMode === 'attack' || storedMode === 'defense') {
   currentTypeFilter = storedMode;
 }
+
+const storedMap = localStorage.getItem(keys.currentMap);
+const validMaps = Object.keys(mapNames);
+let currentMap = (storedMap && validMaps.includes(storedMap)) ? storedMap : 'lotus';
 
 const allValorantAgents = [
   'Astra',
@@ -750,6 +755,11 @@ function applyStratFilters() {
     const showDefensePrinciples = currentMap === 'lotus' && currentTypeFilter === 'defense';
     defensePrinciples.classList.toggle('hidden', !showDefensePrinciples);
   }
+
+  if (defensePrinciplesSplit) {
+    const showSplitPrinciples = currentMap === 'split' && currentTypeFilter === 'attack';
+    defensePrinciplesSplit.classList.toggle('hidden', !showSplitPrinciples);
+  }
 }
 
 filterRow.addEventListener('click', (event) => {
@@ -776,6 +786,7 @@ mapMenuItems.forEach((item) => {
     if (!nextMap) return;
 
     currentMap = nextMap;
+    localStorage.setItem(keys.currentMap, nextMap);
     mapMenuItems.forEach((candidate) => candidate.classList.remove('active'));
     item.classList.add('active');
 
@@ -784,6 +795,7 @@ mapMenuItems.forEach((item) => {
     }
 
     applyStratFilters();
+    renderCommentMatchOptions();
     renderComments();
   });
 });
@@ -819,6 +831,10 @@ document.addEventListener('click', (event) => {
   if (authGate?.open && !authGate.contains(target) && !clickedOpenAuthButton) {
     authGate.open = false;
   }
+
+  if (commentMatchDropdown && commentMatchMenu && !commentMatchDropdown.contains(target)) {
+    commentMatchMenu.classList.add('hidden');
+  }
 });
 
 if (teamGrid) {
@@ -853,13 +869,25 @@ stratCards.forEach((card) => {
     const image = clickedImage || card.querySelector('img');
     if (!image) return;
 
-    const title = card.querySelector('h3').textContent;
+    const title = card.querySelector('h3')?.textContent || '';
     modalImage.src = image.src;
     modalImage.alt = image.alt;
     modalCaption.textContent = title;
     imageModal.showModal();
   });
 });
+
+if (defensePrinciplesSplit) {
+  defensePrinciplesSplit.addEventListener('click', (event) => {
+    const clickedImage = event.target.closest('img');
+    if (!clickedImage || !imageModal || !modalImage) return;
+
+    modalImage.src = clickedImage.src;
+    modalImage.alt = clickedImage.alt;
+    if (modalCaption) modalCaption.textContent = clickedImage.alt;
+    imageModal.showModal();
+  });
+}
 
 closeModal.addEventListener('click', () => imageModal.close());
 imageModal.addEventListener('click', (event) => {
@@ -875,19 +903,199 @@ imageModal.addEventListener('click', (event) => {
 
 const playedForm = document.getElementById('playedForm');
 const playedList = document.getElementById('playedList');
+const matchEditModal = document.getElementById('matchEditModal');
+const matchEditForm = document.getElementById('matchEditForm');
+const matchEditOpponent = document.getElementById('matchEditOpponent');
+const matchEditDate = document.getElementById('matchEditDate');
+const matchEditMap = document.getElementById('matchEditMap');
+const matchEditType = document.getElementById('matchEditType');
+const matchEditElo = document.getElementById('matchEditElo');
+const matchEditCancel = document.getElementById('matchEditCancel');
+
+let editingPlayedMatchIndex = -1;
+
+const rankLogoByElo = {
+  platinum: 'platinum logo.png',
+  diamond: 'diamond logo.png',
+  ascendant: 'ascendant logo.png',
+  immortal: 'immortal logo.png',
+  radiant: 'radiant logo.png'
+};
+
+function getRankLogoPath(elo) {
+  const key = String(elo || '').trim().toLowerCase();
+  const filename = rankLogoByElo[key];
+  return filename ? encodeURI(filename) : '';
+}
+
+function normalizeMapKey(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+
+  if (Object.prototype.hasOwnProperty.call(mapNames, raw)) {
+    return raw;
+  }
+
+  const byLabel = Object.entries(mapNames).find(([, label]) => label.toLowerCase() === raw);
+  if (byLabel) {
+    return byLabel[0];
+  }
+
+  return raw;
+}
+
+function renderRankDisplay(elo) {
+  const rankLabel = elo || 'Rang non precise';
+  const logoPath = getRankLogoPath(rankLabel);
+  const rankKey = String(rankLabel).trim().toLowerCase();
+  const needsBoostClass = rankKey === 'platinum' || rankKey === 'diamond' || rankKey === 'ascendant';
+
+  if (!logoPath) {
+    return rankLabel;
+  }
+
+  return `<img class="rank-logo-inline${needsBoostClass ? ' rank-logo-boost' : ''}" src="${logoPath}" alt="${rankLabel}" title="${rankLabel}">`;
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderMatchLabelWithOptionalLogo(labelPrefix, labelSuffix, logoMarkup = '') {
+  if (logoMarkup) {
+    return `<span class="comment-match-option-label">${escapeHtml(labelPrefix)}</span> - ${logoMarkup} - <span class="comment-match-option-label">${escapeHtml(labelSuffix)}</span>`;
+  }
+
+  return `<span class="comment-match-option-label">${escapeHtml(labelPrefix)}</span> - <span class="comment-match-option-label">${escapeHtml(labelSuffix)}</span>`;
+}
+
+function closeMatchEditModal() {
+  if (!matchEditModal) return;
+
+  matchEditModal.classList.add('hidden');
+  editingPlayedMatchIndex = -1;
+  if (matchEditForm) {
+    matchEditForm.reset();
+  }
+}
+
+function openMatchEditModal(index, match) {
+  if (!matchEditModal || !matchEditForm || !matchEditOpponent || !matchEditDate || !matchEditMap || !matchEditType || !matchEditElo) return;
+
+  editingPlayedMatchIndex = index;
+  matchEditOpponent.value = match.opponent || '';
+  matchEditDate.value = match.date || '';
+  matchEditMap.value = match.map || '';
+  matchEditType.value = match.type || '';
+  matchEditElo.value = match.elo || '';
+
+  matchEditModal.classList.remove('hidden');
+  matchEditOpponent.focus();
+}
 
 function renderPlayed() {
   if (!playedList) return;
 
   const playedMatches = loadData(keys.played);
+  const isAdmin = Boolean(currentAdmin);
   playedList.innerHTML = playedMatches.length
-    ? playedMatches.map((match) => `
+    ? playedMatches.map((match, index) => `
       <li>
-        <strong>${match.opponent}</strong> - ${match.score}
-        <div class="muted">${new Date(match.date).toLocaleDateString('fr-FR')}</div>
+        <strong>BOBER#WiPR vs ${match.opponent || 'Adversaire inconnu'} - ${renderRankDisplay(match.elo)} - ${(match.map || 'Map non precisee').toUpperCase()}</strong>
+        <div class="muted">${new Date(match.date).toLocaleDateString('fr-FR')} - ${match.type || 'Type non precise'}</div>
+        ${match.score ? `<div class="muted">Score: ${match.score}</div>` : ''}
+        ${isAdmin ? `
+          <div class="match-admin-actions">
+            <button type="button" class="secondary-btn match-admin-btn" data-match-action="edit" data-match-index="${index}">Modifier</button>
+            <button type="button" class="secondary-btn match-admin-btn" data-match-action="delete" data-match-index="${index}">Supprimer</button>
+          </div>
+        ` : ''}
       </li>
     `).join('')
     : '<li class="muted">Aucun match joué pour le moment.</li>';
+}
+
+if (playedList) {
+  playedList.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-match-action]');
+    if (!button || !currentAdmin) return;
+
+    const action = button.dataset.matchAction;
+    const index = Number(button.dataset.matchIndex);
+    if (!Number.isInteger(index) || index < 0) return;
+
+    const playedMatches = loadData(keys.played);
+    const target = playedMatches[index];
+    if (!target) return;
+
+    if (action === 'delete') {
+      const confirmed = window.confirm('Supprimer ce match joue ?');
+      if (!confirmed) return;
+
+      playedMatches.splice(index, 1);
+      saveData(keys.played, playedMatches);
+      renderPlayed();
+      renderCommentMatchOptions();
+      return;
+    }
+
+    if (action !== 'edit') return;
+    openMatchEditModal(index, target);
+  });
+}
+
+if (matchEditForm) {
+  matchEditForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if (!currentAdmin || editingPlayedMatchIndex < 0) return;
+
+    const playedMatches = loadData(keys.played);
+    const target = playedMatches[editingPlayedMatchIndex];
+    if (!target) {
+      closeMatchEditModal();
+      return;
+    }
+
+    const updatedMatch = {
+      ...target,
+      opponent: (matchEditOpponent?.value || '').trim(),
+      date: (matchEditDate?.value || '').trim(),
+      map: (matchEditMap?.value || '').trim(),
+      type: (matchEditType?.value || '').trim(),
+      elo: (matchEditElo?.value || '').trim()
+    };
+
+    if (!updatedMatch.opponent || !updatedMatch.date || !updatedMatch.map || !updatedMatch.type || !updatedMatch.elo) {
+      alert('Tous les champs sont obligatoires.');
+      return;
+    }
+
+    playedMatches[editingPlayedMatchIndex] = updatedMatch;
+    saveData(keys.played, playedMatches);
+    closeMatchEditModal();
+    renderPlayed();
+    renderCommentMatchOptions();
+  });
+}
+
+if (matchEditCancel) {
+  matchEditCancel.addEventListener('click', () => {
+    closeMatchEditModal();
+  });
+}
+
+if (matchEditModal) {
+  matchEditModal.addEventListener('click', (event) => {
+    if (event.target === matchEditModal) {
+      closeMatchEditModal();
+    }
+  });
 }
 
 if (playedForm) {
@@ -895,12 +1103,14 @@ if (playedForm) {
     event.preventDefault();
     const opponent = document.getElementById('playedOpponent').value.trim();
     const date = document.getElementById('playedDate').value;
-    const score = document.getElementById('playedScore').value.trim();
+    const map = document.getElementById('playedMap').value;
+    const type = document.getElementById('playedType').value;
+    const elo = document.getElementById('playedOpponentElo').value;
 
-    if (!opponent || !date || !score) return;
+    if (!opponent || !date || !map || !type || !elo) return;
 
     const playedMatches = loadData(keys.played);
-    playedMatches.unshift({ opponent, date, score });
+    playedMatches.unshift({ opponent, date, map, type, elo });
     saveData(keys.played, playedMatches);
     playedForm.reset();
     renderPlayed();
@@ -947,6 +1157,9 @@ if (upcomingForm) {
 const commentForm = document.getElementById('commentForm');
 const commentList = document.getElementById('commentList');
 const commentMatchSelect = document.getElementById('commentMatch');
+const commentMatchDropdown = document.getElementById('commentMatchDropdown');
+const commentMatchToggle = document.getElementById('commentMatchToggle');
+const commentMatchMenu = document.getElementById('commentMatchMenu');
 const playerLoginForm = document.getElementById('playerLoginForm');
 const playerResetForm = document.getElementById('playerResetForm');
 const playerResetHint = document.getElementById('playerResetHint');
@@ -954,6 +1167,9 @@ const playerConnected = document.getElementById('playerConnected');
 const playerStatus = document.getElementById('playerStatus');
 const playerLogout = document.getElementById('playerLogout');
 const commentAuthorInput = document.getElementById('commentAuthor');
+
+let commentMatchOptions = [];
+let commentMatchOptionByValue = new Map();
 
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000;
 
@@ -1457,7 +1673,27 @@ function focusAuthLogin() {
 
 function updateAdminUi() {
   updateAuthState();
+  renderPlayed();
 }
+
+document.addEventListener('click', (event) => {
+  const toggleButton = event.target.closest('.password-toggle');
+  if (!toggleButton) return;
+
+  const targetId = toggleButton.dataset.togglePassword;
+  if (!targetId) return;
+
+  const targetInput = document.getElementById(targetId);
+  if (!targetInput || targetInput.tagName !== 'INPUT') return;
+
+  const willShow = targetInput.type === 'password';
+  targetInput.type = willShow ? 'text' : 'password';
+
+  toggleButton.classList.toggle('is-visible', willShow);
+  toggleButton.textContent = willShow ? '🙈' : '👁';
+  toggleButton.setAttribute('aria-label', willShow ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+  toggleButton.setAttribute('title', willShow ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+});
 
 function generateCommentId() {
   if (window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -1468,10 +1704,94 @@ function generateCommentId() {
 }
 
 function renderCommentMatchOptions() {
-  if (!commentMatchSelect) return;
+  if (!commentMatchSelect || !commentMatchToggle || !commentMatchMenu) return;
 
-  commentMatchSelect.disabled = false;
-  commentMatchSelect.placeholder = 'Match (ex: BOBER vs TEAMX - 13-9)';
+  const activeMapKey = normalizeMapKey(currentMap) || 'lotus';
+  const playedMatches = loadData(keys.played).filter((match) => normalizeMapKey(match.map) === activeMapKey);
+  const upcomingMatches = loadData(keys.upcoming).filter((match) => normalizeMapKey(match.map) === activeMapKey);
+
+  const playedOptions = playedMatches.map((match) => {
+    const opponent = match.opponent || 'Adversaire inconnu';
+    const elo = match.elo || 'Rang non precise';
+    const map = (match.map || 'Map non precisee').toUpperCase();
+    return {
+      value: `BOBER#WiPR vs ${opponent} - ${elo} - ${map}`,
+      prefix: `BOBER#WiPR vs ${opponent}`,
+      suffix: map,
+      logo: renderRankDisplay(elo)
+    };
+  });
+
+  const upcomingOptions = upcomingMatches.map((match) => {
+    const opponent = match.opponent || 'Adversaire inconnu';
+    const map = (match.map || 'MAP').toUpperCase();
+    return {
+      value: `A VENIR - BOBER#WiPR vs ${opponent} - ${map}`,
+      prefix: `A VENIR - BOBER#WiPR vs ${opponent}`,
+      suffix: map,
+      logo: ''
+    };
+  });
+
+  const optionByValue = new Map();
+  [...playedOptions, ...upcomingOptions].forEach((option) => {
+    if (!optionByValue.has(option.value)) {
+      optionByValue.set(option.value, option);
+    }
+  });
+
+  const uniqueOptions = Array.from(optionByValue.values());
+  const previousValue = commentMatchSelect.value;
+  commentMatchOptions = uniqueOptions.map((option) => option.value);
+  commentMatchOptionByValue = optionByValue;
+
+  if (!uniqueOptions.length) {
+    commentMatchSelect.value = '';
+    commentMatchToggle.textContent = 'Aucun match enregistre pour cette map';
+    commentMatchToggle.classList.add('disabled');
+    commentMatchMenu.innerHTML = '';
+    commentMatchMenu.classList.add('hidden');
+    return;
+  }
+
+  commentMatchMenu.innerHTML = uniqueOptions.map((option) => `
+    <button type="button" class="comment-match-option" data-comment-match-value="${escapeHtml(option.value)}">
+      ${renderMatchLabelWithOptionalLogo(option.prefix, option.suffix, option.logo || '')}
+    </button>
+  `).join('');
+
+  commentMatchToggle.classList.remove('disabled');
+  commentMatchToggle.textContent = 'Choisis un match enregistre';
+
+  if (previousValue && optionByValue.has(previousValue)) {
+    commentMatchSelect.value = previousValue;
+    const previousOption = optionByValue.get(previousValue);
+    commentMatchToggle.innerHTML = renderMatchLabelWithOptionalLogo(previousOption.prefix, previousOption.suffix, previousOption.logo || '');
+  } else {
+    commentMatchSelect.value = '';
+  }
+}
+
+if (commentMatchToggle && commentMatchMenu && commentMatchSelect) {
+  commentMatchToggle.addEventListener('click', () => {
+    if (commentMatchToggle.classList.contains('disabled')) return;
+    commentMatchMenu.classList.toggle('hidden');
+  });
+
+  commentMatchMenu.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-comment-match-value]');
+    if (!option) return;
+
+    const value = option.dataset.commentMatchValue || '';
+    if (!value) return;
+
+    commentMatchSelect.value = value;
+    const selectedOption = commentMatchOptionByValue.get(value);
+    if (selectedOption) {
+      commentMatchToggle.innerHTML = renderMatchLabelWithOptionalLogo(selectedOption.prefix, selectedOption.suffix, selectedOption.logo || '');
+    }
+    commentMatchMenu.classList.add('hidden');
+  });
 }
 
 if (playerLoginForm) {
@@ -1625,13 +1945,32 @@ function renderComments() {
   const mapComments = comments.filter((entry) => (entry.map || 'lotus') === currentMap);
   const isAdmin = Boolean(currentAdmin);
 
+  const formatCommentMatch = (matchValue) => {
+    const raw = String(matchValue || '').trim();
+    const playedMatch = raw.match(/^BOBER#WiPR vs (.+?) - (.+?) - (.+)$/);
+
+    if (playedMatch) {
+      const opponent = playedMatch[1] || 'Adversaire inconnu';
+      const elo = playedMatch[2] || 'Rang non precise';
+      const map = playedMatch[3] || 'MAP';
+      return renderMatchLabelWithOptionalLogo(`BOBER#WiPR vs ${opponent}`, map, renderRankDisplay(elo));
+    }
+
+    const upcomingMatch = raw.match(/^(A VENIR - BOBER#WiPR vs .+?) - (.+)$/);
+    if (upcomingMatch) {
+      return renderMatchLabelWithOptionalLogo(upcomingMatch[1], upcomingMatch[2]);
+    }
+
+    return escapeHtml(raw);
+  };
+
   commentList.innerHTML = mapComments.length
     ? mapComments.map((entry) => {
       const commentId = entry.id || `${entry.createdAt}-${entry.author}-${entry.match}`;
       return `
       <li>
         <div class="comment-top">
-          <strong>${entry.author}</strong> ${entry.match}
+          <span class="comment-headline"><strong>${entry.author}</strong> ${formatCommentMatch(entry.match)}</span>
           ${isAdmin ? `<button class="delete-comment-btn" data-id="${commentId}">Supprimer</button>` : ''}
         </div>
         <p>${entry.text}</p>
@@ -1708,6 +2047,10 @@ function startSharedSyncPolling() {
     void runSync();
   }, syncSettings.pollMs);
 }
+
+mapMenuItems.forEach((item) => {
+  item.classList.toggle('active', item.dataset.mapSelect === currentMap);
+});
 
 renderPlayed();
 renderUpcoming();
