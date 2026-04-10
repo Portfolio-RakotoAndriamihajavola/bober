@@ -280,10 +280,8 @@ body {
 body.site-locked .hero,
 body.site-locked main,
 body.site-locked .brand-footer {
-  pointer-events: none;
-  user-select: none;
-  filter: blur(3px) grayscale(0.22);
-  opacity: 0.28;
+  filter: grayscale(0.22);
+  opacity: 0.9;
 }
 
 .hero-brand {
@@ -1339,6 +1337,12 @@ button {
   width: auto;
   border-radius: 999px;
   padding: 8px 12px;
+}
+
+.secondary-btn.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  text-decoration: none;
 }
 
 .comment-top {

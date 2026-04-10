@@ -93,6 +93,10 @@ const mapPresentation = {
   }
 };
 
+const mapGuideByKey = {
+  lotus: 'LOTUS BOBER GUIDE.pdf'
+};
+
 const keys = {
   played: 'boberPlayedMatches',
   upcoming: 'boberUpcomingMatches',
@@ -793,10 +797,23 @@ function applyStratFilters() {
   mapMenuLabel.textContent = `Map : ${label}`;
 
   if (pdfDownloadBtn) {
-    const guideFilename = `${label.toUpperCase()} BOBER GUIDE.pdf`;
-    pdfDownloadBtn.href = encodeURI(guideFilename);
-    pdfDownloadBtn.setAttribute('download', guideFilename);
-    pdfDownloadBtn.textContent = `Telecharger le guide PDF ${label} Bober`;
+    const guideFilename = mapGuideByKey[currentMap] || '';
+
+    if (guideFilename) {
+      pdfDownloadBtn.href = encodeURI(guideFilename);
+      pdfDownloadBtn.setAttribute('download', guideFilename);
+      pdfDownloadBtn.textContent = `Telecharger le guide PDF ${label} Bober`;
+      pdfDownloadBtn.classList.remove('is-disabled');
+      pdfDownloadBtn.setAttribute('aria-disabled', 'false');
+      pdfDownloadBtn.removeAttribute('title');
+    } else {
+      pdfDownloadBtn.removeAttribute('href');
+      pdfDownloadBtn.removeAttribute('download');
+      pdfDownloadBtn.textContent = `Guide PDF ${label} indisponible`;
+      pdfDownloadBtn.classList.add('is-disabled');
+      pdfDownloadBtn.setAttribute('aria-disabled', 'true');
+      pdfDownloadBtn.setAttribute('title', 'Aucun guide PDF n est encore disponible pour cette map.');
+    }
   }
 
   emptyState.classList.toggle('hidden', visibleCount > 0);
@@ -1110,7 +1127,7 @@ function readPdfFileAsDataUrl(file) {
 
 function setPdfFileNameLabel(labelNode, fileName = '') {
   if (!labelNode) return;
-  labelNode.textContent = fileName ? `Fichier enregistré : ${fileName}` : 'Aucun fichier n'a été selectionné';
+  labelNode.textContent = fileName ? `Fichier enregistré : ${fileName}` : "Aucun fichier n'a été selectionné";
 }
 
 if (playedReviewPdf) {
