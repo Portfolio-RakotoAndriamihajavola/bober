@@ -29,6 +29,12 @@ const MIME_TYPES = {
   '.pdf': 'application/pdf'
 };
 
+const CACHE_CONTROL_BY_EXT = {
+  '.html': 'no-store, max-age=0, must-revalidate',
+  '.js': 'no-store, max-age=0, must-revalidate',
+  '.css': 'no-store, max-age=0, must-revalidate'
+};
+
 function ensureDataStore() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -109,8 +115,12 @@ function serveStatic(req, res) {
 
     const ext = path.extname(safePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const cacheControl = CACHE_CONTROL_BY_EXT[ext] || 'public, max-age=86400';
 
-    res.writeHead(200, { 'Content-Type': contentType });
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Cache-Control': cacheControl
+    });
     const stream = fs.createReadStream(safePath);
     stream.pipe(res);
   });

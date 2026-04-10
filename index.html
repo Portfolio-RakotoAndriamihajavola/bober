@@ -185,14 +185,42 @@
             <h3>Setup fort en C</h3>
           </div>
         </article>
+
+        <article class="strat-card" data-map="split" data-type="defense">
+          <img src="split - defense fort en A.png" alt="Defense Split fort en A">
+          <div class="card-info">
+            <h3>Setup fort en A</h3>
+          </div>
+        </article>
+
+        <article class="strat-card" data-map="split" data-type="defense">
+          <img src="split - defense fort en B.png" alt="Defense Split fort en B">
+          <div class="card-info">
+            <h3>Setup fort en B</h3>
+          </div>
+        </article>
       </div>
 
       <div id="defensePrinciples" class="card-box defense-principles hidden">
         <h3>Principes défense Lotus</h3>
-        <p class="defense-title">On joue les espaces de la map diagonalement et non horizontalement, comme sur Pearl.</p>
+        <p class="defense-title">On joue les rotations fast spawn pour reprendre rapidement les sites.</p>
+        <div class="split-flow-block" style="margin-bottom: 12px;">
+          <div class="split-flow-row">
+            <div class="split-flow-img-wrap">
+              <img src="Defense A.png" alt="Setup défense Lotus fort en A">
+              <p class="split-flow-caption"><strong>Setup A</strong> — Fort en A</p>
+            </div>
+            <div class="flow-arrow-wrap" aria-hidden="true"><span class="flow-arrow-shape"></span></div>
+            <div class="split-flow-img-wrap">
+              <img src="split - defense fort en B.png" alt="Setup défense Lotus fort en B">
+              <p class="split-flow-caption"><strong>Setup B</strong> — Fort en B</p>
+            </div>
+          </div>
+        </div>
         <div class="principles-list">
-          <p class="arrow-line">On doit être soit fort en A, soit fort en C, et toujours neutre en B.</p>
-          <p class="arrow-line">Rotation rapide sur les informations, puis dépôt d'un joueur dans la zone pour garder l'information d'une rotation tardive.</p>
+          <p class="arrow-line"><strong>Principe défense</strong> — On joue les rota fast spawn.</p>
+          <p class="arrow-line"><strong>Retake A</strong> — On retake le A par la rampe et le screen.</p>
+          <p class="arrow-line"><strong>Retake B</strong> — On retake le B par la tower et le garage.</p>
         </div>
       </div>
 
@@ -276,6 +304,17 @@
         </div>
       </div>
 
+      <div id="defensePrinciplesSplitDefense" class="card-box defense-principles hidden">
+        <h3>Principe de défense Split</h3>
+        <p class="defense-title">On joue les rotations fast spawn pour reprendre rapidement les espaces.</p>
+
+        <div class="principles-list">
+          <p class="arrow-line">On push des zones et on joue les rota fast spawn.</p>
+          <p class="arrow-line"><strong>Retake A</strong> — On retake le A par la rampe et le screen.</p>
+          <p class="arrow-line"><strong>Retake B</strong> — On retake le B par la tower et le garage.</p>
+        </div>
+      </div>
+
       <p id="emptyState" class="empty-state hidden">Pas encore de contenu pour cette map.</p>
 
       <div class="card-box rex-inline">
@@ -306,7 +345,7 @@
         <article class="card-box team-intro">
           <h3>BOBER #WIPR</h3>
           <p>
-            On joue autour d'une identité simple: discipline, timing et agressivité.
+            On joue autour d'une identité simple: discipline, timing et communication propre.
             Clique sur un profil pour voir ses agents de confort et son histoire en rapide.
           </p>
         </article>
@@ -446,7 +485,7 @@
               <option value="Immortal">Immortal</option>
               <option value="Radiant">Radiant</option>
             </select>
-            <input type="url" id="playedReviewPdf" placeholder="Lien PDF review (https://...) (optionnel)">
+            <input type="file" id="playedReviewPdf" accept="application/pdf,.pdf">
             <input type="url" id="playedTrackerLink" placeholder="Lien Tracker du match (https://...) (optionnel)">
             <input type="url" id="playedVideoLink" placeholder="Lien YouTube du match (https://...) (optionnel)">
             <button type="submit">Ajouter le match</button>
@@ -633,7 +672,7 @@
           <option value="Immortal">Immortal</option>
           <option value="Radiant">Radiant</option>
         </select>
-        <input type="url" id="matchEditReviewPdf" placeholder="Lien PDF review (https://...) (optionnel)">
+        <input type="file" id="matchEditReviewPdf" accept="application/pdf,.pdf">
         <input type="url" id="matchEditTrackerLink" placeholder="Lien Tracker du match (https://...) (optionnel)">
         <input type="url" id="matchEditVideoLink" placeholder="Lien YouTube du match (https://...) (optionnel)">
         <div class="match-edit-actions">

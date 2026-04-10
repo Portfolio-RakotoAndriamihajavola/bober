@@ -497,6 +497,22 @@ main {
   margin: 12px auto 0;
 }
 
+.strat-card[data-type="defense"] {
+  display: flex;
+  flex-direction: column;
+}
+
+.strat-card[data-type="defense"] img {
+  width: calc(100% - 24px);
+  height: clamp(190px, 22vw, 280px);
+  object-fit: contain;
+  margin: 12px auto 0;
+}
+
+.strat-card[data-type="defense"] .card-info {
+  margin-top: 8px;
+}
+
 .flow-images {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
