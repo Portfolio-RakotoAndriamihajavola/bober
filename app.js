@@ -781,7 +781,7 @@ function applyStratFilters() {
     const textMatch = !currentSearch || titleText.includes(currentSearch) || bodyText.includes(currentSearch);
 
     const show = mapMatch && typeMatch && textMatch;
-    card.style.display = show ? 'block' : 'none';
+    card.style.display = show ? '' : 'none';
     if (show) visibleCount += 1;
   });
 
