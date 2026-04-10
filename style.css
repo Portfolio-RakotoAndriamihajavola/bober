@@ -735,6 +735,34 @@ main {
   padding: 6px 10px;
 }
 
+.match-review-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.match-review-btn {
+  padding: 6px 10px;
+  text-decoration: none;
+}
+
+.match-review-btn[disabled] {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.match-review-link {
+  color: #9fd8ff;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.match-review-link:hover {
+  text-decoration: underline;
+}
+
 .match-edit-modal {
   position: fixed;
   inset: 0;

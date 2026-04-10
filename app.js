@@ -287,6 +287,7 @@ const mapPreviewSubtitle = document.getElementById('mapPreviewSubtitle');
 const emptyState = document.getElementById('emptyState');
 const defensePrinciples = document.getElementById('defensePrinciples');
 const defensePrinciplesSplit = document.getElementById('defensePrinciplesSplit');
+const defensePrinciplesSplitB = document.getElementById('defensePrinciplesSplitB');
 const topSearch = document.getElementById('topSearch');
 const topAuthState = document.getElementById('topAuthState');
 const siteLockBanner = document.getElementById('siteLockBanner');
@@ -395,7 +396,7 @@ const teamProfilesData = {
     role: 'Propriétaire / Flex initiateur smokeur',
     story: 'Propriétaire du projet, il cadre la vision d\'équipe et prend les rôles flex initiateur/smokeur selon les besoins.',
     agents: ['Sova', 'Skye', 'Tejo', 'Fade', 'Astra'],
-    tierImage: 'agent_bobe.PNG'
+    tierImage: 'pdp_bobe.png'
   },
   limulesama: {
     name: 'Limulesama',
@@ -416,7 +417,7 @@ const teamProfilesData = {
     role: 'Shot caller / Flex initiateur smoker',
     story: 'Son expérience est essentielle, notamment dans la gestion de la pression. Un joueur fiable sur qui l\'équipe peut compter pour faire les bons reads.',
     agents: ['Astra', 'Gekko', 'Omen'],
-    tierImage: 'agent_quentin.png'
+    tierImage: 'pdp_quentin.jpg'
   },
   warinen: {
     name: 'Warinen',
@@ -769,6 +770,11 @@ function applyStratFilters() {
     const showSplitPrinciples = currentMap === 'split' && currentTypeFilter === 'attack';
     defensePrinciplesSplit.classList.toggle('hidden', !showSplitPrinciples);
   }
+
+  if (defensePrinciplesSplitB) {
+    const showSplitBPrinciples = currentMap === 'split' && currentTypeFilter === 'attack';
+    defensePrinciplesSplitB.classList.toggle('hidden', !showSplitBPrinciples);
+  }
 }
 
 filterRow.addEventListener('click', (event) => {
@@ -898,6 +904,18 @@ if (defensePrinciplesSplit) {
   });
 }
 
+if (defensePrinciplesSplitB) {
+  defensePrinciplesSplitB.addEventListener('click', (event) => {
+    const clickedImage = event.target.closest('img');
+    if (!clickedImage || !imageModal || !modalImage) return;
+
+    modalImage.src = clickedImage.src;
+    modalImage.alt = clickedImage.alt;
+    if (modalCaption) modalCaption.textContent = clickedImage.alt;
+    imageModal.showModal();
+  });
+}
+
 closeModal.addEventListener('click', () => imageModal.close());
 imageModal.addEventListener('click', (event) => {
   const rect = imageModal.getBoundingClientRect();
@@ -919,6 +937,9 @@ const matchEditDate = document.getElementById('matchEditDate');
 const matchEditMap = document.getElementById('matchEditMap');
 const matchEditType = document.getElementById('matchEditType');
 const matchEditElo = document.getElementById('matchEditElo');
+const matchEditReviewPdf = document.getElementById('matchEditReviewPdf');
+const matchEditTrackerLink = document.getElementById('matchEditTrackerLink');
+const matchEditVideoLink = document.getElementById('matchEditVideoLink');
 const matchEditCancel = document.getElementById('matchEditCancel');
 
 let editingPlayedMatchIndex = -1;
@@ -983,6 +1004,21 @@ function renderMatchLabelWithOptionalLogo(labelPrefix, labelSuffix, logoMarkup =
   return `<span class="comment-match-option-label">${escapeHtml(labelPrefix)}</span> - <span class="comment-match-option-label">${escapeHtml(labelSuffix)}</span>`;
 }
 
+function sanitizeExternalUrl(url) {
+  const raw = String(url || '').trim();
+  if (!raw) return '';
+
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return '';
+    }
+    return parsed.href;
+  } catch {
+    return '';
+  }
+}
+
 function closeMatchEditModal() {
   if (!matchEditModal) return;
 
@@ -994,7 +1030,7 @@ function closeMatchEditModal() {
 }
 
 function openMatchEditModal(index, match) {
-  if (!matchEditModal || !matchEditForm || !matchEditOpponent || !matchEditDate || !matchEditMap || !matchEditType || !matchEditElo) return;
+  if (!matchEditModal || !matchEditForm || !matchEditOpponent || !matchEditDate || !matchEditMap || !matchEditType || !matchEditElo || !matchEditReviewPdf || !matchEditTrackerLink || !matchEditVideoLink) return;
 
   editingPlayedMatchIndex = index;
   matchEditOpponent.value = match.opponent || '';
@@ -1002,6 +1038,9 @@ function openMatchEditModal(index, match) {
   matchEditMap.value = match.map || '';
   matchEditType.value = match.type || '';
   matchEditElo.value = match.elo || '';
+  matchEditReviewPdf.value = match.reviewPdf || '';
+  matchEditTrackerLink.value = match.trackerLink || '';
+  matchEditVideoLink.value = match.videoLink || '';
 
   matchEditModal.classList.remove('hidden');
   matchEditOpponent.focus();
@@ -1013,11 +1052,22 @@ function renderPlayed() {
   const playedMatches = loadData(keys.played);
   const isAdmin = Boolean(currentAdmin);
   playedList.innerHTML = playedMatches.length
-    ? playedMatches.map((match, index) => `
+    ? playedMatches.map((match, index) => {
+      const reviewPdfUrl = sanitizeExternalUrl(match.reviewPdf);
+      const trackerUrl = sanitizeExternalUrl(match.trackerLink);
+      const videoUrl = sanitizeExternalUrl(match.videoLink);
+      return `
       <li>
         <strong>BOBER#WiPR vs ${match.opponent || 'Adversaire inconnu'} - ${renderRankDisplay(match.elo)} - ${(match.map || 'Map non precisee').toUpperCase()}</strong>
         <div class="muted">${new Date(match.date).toLocaleDateString('fr-FR')} - ${match.type || 'Type non precise'}</div>
         ${match.score ? `<div class="muted">Score: ${match.score}</div>` : ''}
+        <div class="match-review-actions">
+          ${reviewPdfUrl
+            ? `<a href="${reviewPdfUrl}" target="_blank" rel="noopener noreferrer" class="secondary-btn match-review-btn">Review</a>`
+            : '<button type="button" class="secondary-btn match-review-btn" disabled>Review indisponible</button>'}
+          ${trackerUrl ? `<a href="${trackerUrl}" target="_blank" rel="noopener noreferrer" class="match-review-link">Tracker</a>` : ''}
+          ${videoUrl ? `<a href="${videoUrl}" target="_blank" rel="noopener noreferrer" class="match-review-link">YouTube</a>` : ''}
+        </div>
         ${isAdmin ? `
           <div class="match-admin-actions">
             <button type="button" class="secondary-btn match-admin-btn" data-match-action="edit" data-match-index="${index}">Modifier</button>
@@ -1025,7 +1075,8 @@ function renderPlayed() {
           </div>
         ` : ''}
       </li>
-    `).join('')
+    `;
+    }).join('')
     : '<li class="muted">Aucun match joué pour le moment.</li>';
 }
 
@@ -1077,13 +1128,29 @@ if (matchEditForm) {
       date: (matchEditDate?.value || '').trim(),
       map: (matchEditMap?.value || '').trim(),
       type: (matchEditType?.value || '').trim(),
-      elo: (matchEditElo?.value || '').trim()
+      elo: (matchEditElo?.value || '').trim(),
+      reviewPdf: (matchEditReviewPdf?.value || '').trim(),
+      trackerLink: (matchEditTrackerLink?.value || '').trim(),
+      videoLink: (matchEditVideoLink?.value || '').trim()
     };
 
     if (!updatedMatch.opponent || !updatedMatch.date || !updatedMatch.map || !updatedMatch.type || !updatedMatch.elo) {
       alert('Tous les champs sont obligatoires.');
       return;
     }
+
+    const safeReviewPdf = updatedMatch.reviewPdf ? sanitizeExternalUrl(updatedMatch.reviewPdf) : '';
+    const safeTrackerLink = updatedMatch.trackerLink ? sanitizeExternalUrl(updatedMatch.trackerLink) : '';
+    const safeVideoLink = updatedMatch.videoLink ? sanitizeExternalUrl(updatedMatch.videoLink) : '';
+
+    if ((updatedMatch.reviewPdf && !safeReviewPdf) || (updatedMatch.trackerLink && !safeTrackerLink) || (updatedMatch.videoLink && !safeVideoLink)) {
+      alert('Les liens review, tracker et YouTube doivent commencer par https://');
+      return;
+    }
+
+    updatedMatch.reviewPdf = safeReviewPdf;
+    updatedMatch.trackerLink = safeTrackerLink;
+    updatedMatch.videoLink = safeVideoLink;
 
     playedMatches[editingPlayedMatchIndex] = updatedMatch;
     saveData(keys.played, playedMatches);
@@ -1115,11 +1182,32 @@ if (playedForm) {
     const map = document.getElementById('playedMap').value;
     const type = document.getElementById('playedType').value;
     const elo = document.getElementById('playedOpponentElo').value;
+    const reviewPdf = document.getElementById('playedReviewPdf').value.trim();
+    const trackerLink = document.getElementById('playedTrackerLink').value.trim();
+    const videoLink = document.getElementById('playedVideoLink').value.trim();
 
     if (!opponent || !date || !map || !type || !elo) return;
 
+    const safeReviewPdf = reviewPdf ? sanitizeExternalUrl(reviewPdf) : '';
+    const safeTrackerLink = trackerLink ? sanitizeExternalUrl(trackerLink) : '';
+    const safeVideoLink = videoLink ? sanitizeExternalUrl(videoLink) : '';
+
+    if ((reviewPdf && !safeReviewPdf) || (trackerLink && !safeTrackerLink) || (videoLink && !safeVideoLink)) {
+      alert('Les liens review, tracker et YouTube doivent commencer par https://');
+      return;
+    }
+
     const playedMatches = loadData(keys.played);
-    playedMatches.unshift({ opponent, date, map, type, elo });
+    playedMatches.unshift({
+      opponent,
+      date,
+      map,
+      type,
+      elo,
+      reviewPdf: safeReviewPdf,
+      trackerLink: safeTrackerLink,
+      videoLink: safeVideoLink
+    });
     saveData(keys.played, playedMatches);
     playedForm.reset();
     renderPlayed();
