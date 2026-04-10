@@ -963,7 +963,10 @@ const matchEditDate = document.getElementById('matchEditDate');
 const matchEditMap = document.getElementById('matchEditMap');
 const matchEditType = document.getElementById('matchEditType');
 const matchEditElo = document.getElementById('matchEditElo');
+const playedReviewPdf = document.getElementById('playedReviewPdf');
+const playedReviewPdfName = document.getElementById('playedReviewPdfName');
 const matchEditReviewPdf = document.getElementById('matchEditReviewPdf');
+const matchEditReviewPdfName = document.getElementById('matchEditReviewPdfName');
 const matchEditTrackerLink = document.getElementById('matchEditTrackerLink');
 const matchEditVideoLink = document.getElementById('matchEditVideoLink');
 const matchEditCancel = document.getElementById('matchEditCancel');
@@ -1074,6 +1077,25 @@ function readPdfFileAsDataUrl(file) {
   });
 }
 
+function setPdfFileNameLabel(labelNode, fileName = '') {
+  if (!labelNode) return;
+  labelNode.textContent = fileName ? `Fichier selectionne : ${fileName}` : 'Aucun fichier n a ete selectionne';
+}
+
+if (playedReviewPdf) {
+  playedReviewPdf.addEventListener('change', () => {
+    const selectedFileName = playedReviewPdf.files?.[0]?.name || '';
+    setPdfFileNameLabel(playedReviewPdfName, selectedFileName);
+  });
+}
+
+if (matchEditReviewPdf) {
+  matchEditReviewPdf.addEventListener('change', () => {
+    const selectedFileName = matchEditReviewPdf.files?.[0]?.name || '';
+    setPdfFileNameLabel(matchEditReviewPdfName, selectedFileName);
+  });
+}
+
 function closeMatchEditModal() {
   if (!matchEditModal) return;
 
@@ -1082,6 +1104,7 @@ function closeMatchEditModal() {
   if (matchEditForm) {
     matchEditForm.reset();
   }
+  setPdfFileNameLabel(matchEditReviewPdfName, '');
 }
 
 function openMatchEditModal(index, match) {
@@ -1095,6 +1118,7 @@ function openMatchEditModal(index, match) {
   matchEditElo.value = match.elo || '';
   matchEditTrackerLink.value = match.trackerLink || '';
   matchEditVideoLink.value = match.videoLink || '';
+  setPdfFileNameLabel(matchEditReviewPdfName, String(match.reviewPdfName || '').trim());
 
   matchEditModal.classList.remove('hidden');
   matchEditOpponent.focus();
@@ -1248,7 +1272,7 @@ if (playedForm) {
     const map = document.getElementById('playedMap').value;
     const type = document.getElementById('playedType').value;
     const elo = document.getElementById('playedOpponentElo').value;
-    const reviewPdfFile = document.getElementById('playedReviewPdf').files[0] || null;
+    const reviewPdfFile = playedReviewPdf?.files?.[0] || null;
     const trackerLink = document.getElementById('playedTrackerLink').value.trim();
     const videoLink = document.getElementById('playedVideoLink').value.trim();
 
@@ -1290,6 +1314,7 @@ if (playedForm) {
     });
     saveData(keys.played, playedMatches);
     playedForm.reset();
+    setPdfFileNameLabel(playedReviewPdfName, '');
     renderPlayed();
     renderCommentMatchOptions();
   });

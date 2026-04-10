@@ -1194,6 +1194,12 @@ main {
   gap: 8px;
 }
 
+.file-picked-name {
+  margin: -2px 2px 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 input,
 select,
 textarea,
