@@ -1278,6 +1278,77 @@ function saveAttendancePolls(data) {
 }
 
 let hideCompletedDays = true;
+let midnightAttendanceRefreshTimer = 0;
+
+const frenchMonthToIndex = {
+  janvier: 0,
+  fevrier: 1,
+  mars: 2,
+  avril: 3,
+  mai: 4,
+  juin: 5,
+  juillet: 6,
+  aout: 7,
+  septembre: 8,
+  octobre: 9,
+  novembre: 10,
+  decembre: 11
+};
+
+function normalizeFrenchText(value) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
+function parseCalendarLabelDate(label) {
+  const normalized = normalizeFrenchText(label);
+  const match = normalized.match(/(\d{1,2})\s+([a-z]+)/);
+  if (!match) return null;
+
+  const day = Number(match[1]);
+  const monthIndex = frenchMonthToIndex[match[2]];
+  if (!Number.isInteger(day) || monthIndex === undefined) return null;
+
+  const currentYear = new Date().getFullYear();
+  const parsed = new Date(currentYear, monthIndex, day);
+  if (Number.isNaN(parsed.getTime())) return null;
+
+  return parsed;
+}
+
+function refreshCompletedCalendarDays(calendarItems) {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  calendarItems.forEach((item) => {
+    const label = item.querySelector(':scope > strong')?.textContent || '';
+    const eventDate = parseCalendarLabelDate(label);
+    if (!eventDate) return;
+
+    // A day becomes completed only after midnight of the next day.
+    const isCompleted = eventDate.getTime() < todayStart.getTime();
+    item.classList.toggle('completed', isCompleted);
+  });
+}
+
+function scheduleMidnightAttendanceRefresh() {
+  if (midnightAttendanceRefreshTimer) {
+    clearTimeout(midnightAttendanceRefreshTimer);
+  }
+
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 0, 0);
+
+  const delayMs = Math.max(1000, nextMidnight.getTime() - now.getTime() + 200);
+  midnightAttendanceRefreshTimer = window.setTimeout(() => {
+    renderAttendancePolls();
+    scheduleMidnightAttendanceRefresh();
+  }, delayMs);
+}
 
 function getVoteChoice(voteEntry) {
   if (typeof voteEntry === 'string') return voteEntry;
@@ -1326,6 +1397,8 @@ function getCalendarEventId(item) {
 function renderAttendancePolls() {
   const calendarItems = document.querySelectorAll('.weekly-calendar li');
   if (!calendarItems.length) return;
+
+  refreshCompletedCalendarDays(calendarItems);
 
   const calendarRoot = document.querySelector('.weekly-calendar');
   if (!calendarRoot) return;
@@ -2061,5 +2134,6 @@ updateAdminUi();
 updatePlayerUi();
 renderComments();
 renderAttendancePolls();
+scheduleMidnightAttendanceRefresh();
 updateSiteAccessUi();
 startSharedSyncPolling();
