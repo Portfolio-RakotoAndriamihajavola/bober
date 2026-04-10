@@ -1,6 +1,37 @@
 ﻿const tabs = document.querySelectorAll('.tab');
 const panels = document.querySelectorAll('.tab-panel');
 
+function applyFaviconZoom(scale = 1.5) {
+  const faviconLinks = document.querySelectorAll('link[rel~="icon"]');
+  if (!faviconLinks.length) return;
+
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const drawWidth = canvas.width * scale;
+    const drawHeight = canvas.height * scale;
+    const offsetX = (canvas.width - drawWidth) / 2;
+    const offsetY = (canvas.height - drawHeight) / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+    const zoomedIcon = canvas.toDataURL('image/png');
+    faviconLinks.forEach((link) => {
+      link.setAttribute('href', zoomedIcon);
+    });
+  };
+
+  img.src = 'Logo%20bober.png';
+}
+
+applyFaviconZoom(1.5);
+
 const mapNames = {
   abyss: 'Abyss',
   ascent: 'Ascent',
@@ -1079,7 +1110,7 @@ function readPdfFileAsDataUrl(file) {
 
 function setPdfFileNameLabel(labelNode, fileName = '') {
   if (!labelNode) return;
-  labelNode.textContent = fileName ? `Fichier enregistré : ${fileName}` : 'Aucun fichier n a ete selectionne';
+  labelNode.textContent = fileName ? `Fichier selectionne : ${fileName}` : 'Aucun fichier n a ete selectionne';
 }
 
 if (playedReviewPdf) {
