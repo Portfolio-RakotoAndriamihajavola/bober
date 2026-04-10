@@ -1110,7 +1110,7 @@ function readPdfFileAsDataUrl(file) {
 
 function setPdfFileNameLabel(labelNode, fileName = '') {
   if (!labelNode) return;
-  labelNode.textContent = fileName ? `Fichier selectionne : ${fileName}` : 'Aucun fichier n a ete selectionne';
+  labelNode.textContent = fileName ? `Fichier enregistré : ${fileName}` : 'Aucun fichier n'a été selectionné';
 }
 
 if (playedReviewPdf) {
