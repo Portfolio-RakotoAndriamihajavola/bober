@@ -284,10 +284,12 @@ const mapMenuItems = document.querySelectorAll('[data-map-select]');
 const mapPreviewImage = document.getElementById('mapPreviewImage');
 const mapPreviewTitle = document.getElementById('mapPreviewTitle');
 const mapPreviewSubtitle = document.getElementById('mapPreviewSubtitle');
+const pdfDownloadBtn = document.querySelector('.pdf-download-btn');
 const emptyState = document.getElementById('emptyState');
 const defensePrinciples = document.getElementById('defensePrinciples');
 const defensePrinciplesSplit = document.getElementById('defensePrinciplesSplit');
 const defensePrinciplesSplitB = document.getElementById('defensePrinciplesSplitB');
+const defensePrinciplesSplitDefense = document.getElementById('defensePrinciplesSplitDefense');
 const topSearch = document.getElementById('topSearch');
 const topAuthState = document.getElementById('topAuthState');
 const siteLockBanner = document.getElementById('siteLockBanner');
@@ -759,6 +761,13 @@ function applyStratFilters() {
   mapPreviewImage.alt = `Aperçu de la map ${label}`;
   mapMenuLabel.textContent = `Map : ${label}`;
 
+  if (pdfDownloadBtn) {
+    const guideFilename = `${label.toUpperCase()} BOBER GUIDE.pdf`;
+    pdfDownloadBtn.href = encodeURI(guideFilename);
+    pdfDownloadBtn.setAttribute('download', guideFilename);
+    pdfDownloadBtn.textContent = `Telecharger le guide PDF ${label} Bober`;
+  }
+
   emptyState.classList.toggle('hidden', visibleCount > 0);
 
   if (defensePrinciples) {
@@ -774,6 +783,11 @@ function applyStratFilters() {
   if (defensePrinciplesSplitB) {
     const showSplitBPrinciples = currentMap === 'split' && currentTypeFilter === 'attack';
     defensePrinciplesSplitB.classList.toggle('hidden', !showSplitBPrinciples);
+  }
+
+  if (defensePrinciplesSplitDefense) {
+    const showSplitDefensePrinciples = currentMap === 'split' && currentTypeFilter === 'defense';
+    defensePrinciplesSplitDefense.classList.toggle('hidden', !showSplitDefensePrinciples);
   }
 }
 
@@ -916,6 +930,18 @@ if (defensePrinciplesSplitB) {
   });
 }
 
+if (defensePrinciplesSplitDefense) {
+  defensePrinciplesSplitDefense.addEventListener('click', (event) => {
+    const clickedImage = event.target.closest('img');
+    if (!clickedImage || !imageModal || !modalImage) return;
+
+    modalImage.src = clickedImage.src;
+    modalImage.alt = clickedImage.alt;
+    if (modalCaption) modalCaption.textContent = clickedImage.alt;
+    imageModal.showModal();
+  });
+}
+
 closeModal.addEventListener('click', () => imageModal.close());
 imageModal.addEventListener('click', (event) => {
   const rect = imageModal.getBoundingClientRect();
@@ -1019,6 +1045,35 @@ function sanitizeExternalUrl(url) {
   }
 }
 
+function readPdfFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve({ dataUrl: '', fileName: '' });
+      return;
+    }
+
+    const isPdfMime = file.type === 'application/pdf';
+    const isPdfExtension = /\.pdf$/i.test(file.name || '');
+    if (!isPdfMime && !isPdfExtension) {
+      reject(new Error('Le fichier sélectionné doit être un PDF.'));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      if (!result.startsWith('data:application/pdf')) {
+        reject(new Error('Le fichier sélectionné doit être un PDF valide.'));
+        return;
+      }
+
+      resolve({ dataUrl: result, fileName: file.name || 'match-review.pdf' });
+    };
+    reader.onerror = () => reject(new Error('Impossible de lire le fichier PDF.'));
+    reader.readAsDataURL(file);
+  });
+}
+
 function closeMatchEditModal() {
   if (!matchEditModal) return;
 
@@ -1038,7 +1093,6 @@ function openMatchEditModal(index, match) {
   matchEditMap.value = match.map || '';
   matchEditType.value = match.type || '';
   matchEditElo.value = match.elo || '';
-  matchEditReviewPdf.value = match.reviewPdf || '';
   matchEditTrackerLink.value = match.trackerLink || '';
   matchEditVideoLink.value = match.videoLink || '';
 
@@ -1053,7 +1107,9 @@ function renderPlayed() {
   const isAdmin = Boolean(currentAdmin);
   playedList.innerHTML = playedMatches.length
     ? playedMatches.map((match, index) => {
-      const reviewPdfUrl = sanitizeExternalUrl(match.reviewPdf);
+      const reviewPdfDataUrl = String(match.reviewPdfDataUrl || '').trim();
+      const reviewPdfUrl = reviewPdfDataUrl || sanitizeExternalUrl(match.reviewPdf);
+      const reviewPdfName = String(match.reviewPdfName || '').trim() || 'match-review.pdf';
       const trackerUrl = sanitizeExternalUrl(match.trackerLink);
       const videoUrl = sanitizeExternalUrl(match.videoLink);
       return `
@@ -1063,7 +1119,7 @@ function renderPlayed() {
         ${match.score ? `<div class="muted">Score: ${match.score}</div>` : ''}
         <div class="match-review-actions">
           ${reviewPdfUrl
-            ? `<a href="${reviewPdfUrl}" target="_blank" rel="noopener noreferrer" class="secondary-btn match-review-btn">Review</a>`
+            ? `<a href="${reviewPdfUrl}" target="_blank" rel="noopener noreferrer" download="${escapeHtml(reviewPdfName)}" class="secondary-btn match-review-btn">Review</a>`
             : '<button type="button" class="secondary-btn match-review-btn" disabled>Review indisponible</button>'}
           ${trackerUrl ? `<a href="${trackerUrl}" target="_blank" rel="noopener noreferrer" class="match-review-link">Tracker</a>` : ''}
           ${videoUrl ? `<a href="${videoUrl}" target="_blank" rel="noopener noreferrer" class="match-review-link">YouTube</a>` : ''}
@@ -1110,7 +1166,7 @@ if (playedList) {
 }
 
 if (matchEditForm) {
-  matchEditForm.addEventListener('submit', (event) => {
+  matchEditForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     if (!currentAdmin || editingPlayedMatchIndex < 0) return;
@@ -1129,7 +1185,6 @@ if (matchEditForm) {
       map: (matchEditMap?.value || '').trim(),
       type: (matchEditType?.value || '').trim(),
       elo: (matchEditElo?.value || '').trim(),
-      reviewPdf: (matchEditReviewPdf?.value || '').trim(),
       trackerLink: (matchEditTrackerLink?.value || '').trim(),
       videoLink: (matchEditVideoLink?.value || '').trim()
     };
@@ -1139,18 +1194,29 @@ if (matchEditForm) {
       return;
     }
 
-    const safeReviewPdf = updatedMatch.reviewPdf ? sanitizeExternalUrl(updatedMatch.reviewPdf) : '';
     const safeTrackerLink = updatedMatch.trackerLink ? sanitizeExternalUrl(updatedMatch.trackerLink) : '';
     const safeVideoLink = updatedMatch.videoLink ? sanitizeExternalUrl(updatedMatch.videoLink) : '';
 
-    if ((updatedMatch.reviewPdf && !safeReviewPdf) || (updatedMatch.trackerLink && !safeTrackerLink) || (updatedMatch.videoLink && !safeVideoLink)) {
-      alert('Les liens review, tracker et YouTube doivent commencer par https://');
+    if ((updatedMatch.trackerLink && !safeTrackerLink) || (updatedMatch.videoLink && !safeVideoLink)) {
+      alert('Les liens tracker et YouTube doivent commencer par https://');
       return;
     }
 
-    updatedMatch.reviewPdf = safeReviewPdf;
     updatedMatch.trackerLink = safeTrackerLink;
     updatedMatch.videoLink = safeVideoLink;
+
+    const uploadedReviewPdf = matchEditReviewPdf?.files?.[0] || null;
+    if (uploadedReviewPdf) {
+      try {
+        const parsedPdf = await readPdfFileAsDataUrl(uploadedReviewPdf);
+        updatedMatch.reviewPdfDataUrl = parsedPdf.dataUrl;
+        updatedMatch.reviewPdfName = parsedPdf.fileName;
+        updatedMatch.reviewPdf = '';
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Le PDF ne peut pas être chargé.');
+        return;
+      }
+    }
 
     playedMatches[editingPlayedMatchIndex] = updatedMatch;
     saveData(keys.played, playedMatches);
@@ -1175,26 +1241,38 @@ if (matchEditModal) {
 }
 
 if (playedForm) {
-  playedForm.addEventListener('submit', (event) => {
+  playedForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const opponent = document.getElementById('playedOpponent').value.trim();
     const date = document.getElementById('playedDate').value;
     const map = document.getElementById('playedMap').value;
     const type = document.getElementById('playedType').value;
     const elo = document.getElementById('playedOpponentElo').value;
-    const reviewPdf = document.getElementById('playedReviewPdf').value.trim();
+    const reviewPdfFile = document.getElementById('playedReviewPdf').files[0] || null;
     const trackerLink = document.getElementById('playedTrackerLink').value.trim();
     const videoLink = document.getElementById('playedVideoLink').value.trim();
 
     if (!opponent || !date || !map || !type || !elo) return;
 
-    const safeReviewPdf = reviewPdf ? sanitizeExternalUrl(reviewPdf) : '';
     const safeTrackerLink = trackerLink ? sanitizeExternalUrl(trackerLink) : '';
     const safeVideoLink = videoLink ? sanitizeExternalUrl(videoLink) : '';
 
-    if ((reviewPdf && !safeReviewPdf) || (trackerLink && !safeTrackerLink) || (videoLink && !safeVideoLink)) {
-      alert('Les liens review, tracker et YouTube doivent commencer par https://');
+    if ((trackerLink && !safeTrackerLink) || (videoLink && !safeVideoLink)) {
+      alert('Les liens tracker et YouTube doivent commencer par https://');
       return;
+    }
+
+    let reviewPdfDataUrl = '';
+    let reviewPdfName = '';
+    if (reviewPdfFile) {
+      try {
+        const parsedPdf = await readPdfFileAsDataUrl(reviewPdfFile);
+        reviewPdfDataUrl = parsedPdf.dataUrl;
+        reviewPdfName = parsedPdf.fileName;
+      } catch (error) {
+        alert(error instanceof Error ? error.message : 'Le PDF ne peut pas être chargé.');
+        return;
+      }
     }
 
     const playedMatches = loadData(keys.played);
@@ -1204,7 +1282,9 @@ if (playedForm) {
       map,
       type,
       elo,
-      reviewPdf: safeReviewPdf,
+      reviewPdf: '',
+      reviewPdfDataUrl,
+      reviewPdfName,
       trackerLink: safeTrackerLink,
       videoLink: safeVideoLink
     });
