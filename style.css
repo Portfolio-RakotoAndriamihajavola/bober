@@ -1588,3 +1588,10 @@ dialog::backdrop {
     width: 120px;
   }
 }
+
+/* Lien vers la BOBER Académie, dans la même rangée que les onglets. */
+a.tab {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}

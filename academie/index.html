@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOBER Académie - Playbook Valorant</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+    <script src="js/progress.js" defer></script>
+</head>
+<body data-page="accueil">
+
+<!-- Héros d'une page : cadre 1440 × 1080 centré, tout est placé en unités de cadre (--u). -->
+<section class="heros" aria-label="Accueil de l'académie">
+    <div class="cadre-heros">
+
+        <header class="barre">
+            <a class="logo" href="index.html"><img src="../Logo%20bober%20H.png" alt="" width="320" height="277" draggable="false"><span>BOBER #WIPR</span></a>
+            <nav class="menu" aria-label="Sections de l'accueil">
+                <a href="#parcours">Le parcours</a>
+                <a href="#roster">Roster</a>
+                <a href="#a-venir">À venir</a>
+                <a href="#methode">Méthode</a>
+            </nav>
+            <div class="pilules">
+                <a class="pilule pilule-sombre" href="../index.html">Site d'équipe</a>
+                <a class="pilule pilule-verte" data-accueil-reprendre href="m00-diagnostic.html">Reprendre</a>
+            </div>
+        </header>
+
+        <p class="badge" data-accueil-etat>0 en cours · 0 % validé</p>
+
+        <h1 class="titre-heros">
+            <span class="ligne ligne-1" data-accueil-titre>Bienvenue chez BOBER</span>
+            <span class="ligne ligne-2">Ton playbook Valorant</span>
+        </h1>
+
+        <p class="sous-titre">
+            <span>Apprends les séquences de la team, map après map,</span>
+            <span>du diagnostic jusqu'au prochain officiel.</span>
+            <span>Fais glisser les cartes, puis choisis ton module.</span>
+        </p>
+
+        <!-- Notes manuscrites et traits qui se dessinent seuls (décoratifs). -->
+        <svg class="griffonnages" viewBox="0 0 1440 1080" aria-hidden="true" focusable="false">
+            <path class="trait" d="M270 379 L257 413"/>
+            <path class="trait" d="M285 379 L272 413"/>
+            <path class="trait" d="M1180 404 C1250 392 1326 412 1312 470"/>
+            <path class="trait" d="M1297 455 L1312 472 L1326 452"/>
+        </svg>
+        <p class="note note-prochain" aria-hidden="true">Ta prochaine<br>étape</p>
+
+        <!-- Carrousel courbé : une carte par module. Sans JavaScript, les cartes restent une simple rangée. -->
+        <div class="rangee" role="region" aria-roledescription="carrousel" aria-label="Modules du parcours. Flèches gauche et droite pour défiler.">
+            <ul class="cartes">
+                <li class="carte" data-carte="m00" data-precedent="">
+                    <a class="module-lien" href="m00-diagnostic.html" data-href="m00-diagnostic.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 0</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="14"/><path d="M24 4v10M24 34v10M4 24h10M34 24h10"/><circle cx="24" cy="24" r="2.5"/></svg>
+                            <span class="carte-titre">Diagnostic</span>
+                            <span class="carte-meta">20 min</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m00"><span></span></div>
+                    <p class="carte-etat" data-module-label="m00"></p>
+                </li>
+                <li class="carte" data-carte="m01" data-precedent="Diagnostic">
+                    <a class="module-lien" href="m01-equipe.html" data-href="m01-equipe.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 1</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><circle cx="17" cy="17" r="6"/><path d="M5 39c0-7 5-12 12-12s12 5 12 12"/><circle cx="33" cy="15" r="5"/><path d="M31 26c6 0 12 4 12 11"/></svg>
+                            <span class="carte-titre">La team et les calls</span>
+                            <span class="carte-meta">30 min</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m01"><span></span></div>
+                    <p class="carte-etat" data-module-label="m01"></p>
+                </li>
+                <li class="carte map" data-carte="m02" data-precedent="La team et les calls">
+                    <img class="carte-fond" src="../Lotus.webp" alt="" draggable="false">
+                    <a class="module-lien" href="m02-lotus.html" data-href="m02-lotus.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 2</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 38c-7-4-9-12-9-19 6 2 9 7 9 13 0-6 3-11 9-13 0 7-2 15-9 19z"/><path d="M24 38c-7 0-14-3-18-10 6-1 12 1 15 5"/><path d="M24 38c7 0 14-3 18-10-6-1-12 1-15 5"/></svg>
+                            <span class="carte-titre">Lotus</span>
+                            <span class="carte-meta">Attaque et défense · 1 h</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m02"><span></span></div>
+                    <p class="carte-etat" data-module-label="m02"></p>
+                </li>
+                <li class="carte map" data-carte="m03" data-precedent="Lotus">
+                    <img class="carte-fond" src="../Split.webp" alt="" draggable="false">
+                    <a class="module-lien" href="m03-split.html" data-href="m03-split.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 3</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 42V25L12 11"/><path d="M24 25l12-14"/><path d="M10 19V9h10"/><path d="M38 19V9H28"/></svg>
+                            <span class="carte-titre">Split</span>
+                            <span class="carte-meta">Attaque et défense · 1 h 30</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m03"><span></span></div>
+                    <p class="carte-etat" data-module-label="m03"></p>
+                </li>
+                <li class="carte" data-carte="m04" data-precedent="Split">
+                    <a class="module-lien" href="m04-matchs-rex.html" data-href="m04-matchs-rex.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 4</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="10" width="34" height="31" rx="3"/><path d="M7 18h34"/><path d="M16 6v8M32 6v8"/><path d="M16 29l5 5 10-10"/></svg>
+                            <span class="carte-titre">Matchs, review et REX</span>
+                            <span class="carte-meta">45 min</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m04"><span></span></div>
+                    <p class="carte-etat" data-module-label="m04"></p>
+                </li>
+                <li class="carte" data-carte="m05" data-precedent="Matchs, review et REX">
+                    <a class="module-lien" href="m05-validation.html" data-href="m05-validation.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Module 5</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="19" r="11"/><path d="M19 19l4 4 7-8"/><path d="M17 28l-4 14 11-5 11 5-4-14"/></svg>
+                            <span class="carte-titre">Validation</span>
+                            <span class="carte-meta">Prêt pour l'offi · 30 min</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="m05"><span></span></div>
+                    <p class="carte-etat" data-module-label="m05"></p>
+                </li>
+                <li class="carte complementaire" data-carte="c01">
+                    <a class="module-lien" href="c01-pool-agents.html" data-href="c01-pool-agents.html" draggable="false">
+                        <span class="carte-corps">
+                            <span class="carte-num">Complément</span>
+                            <svg class="picto" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="6" width="15" height="15" rx="3"/><rect x="27" y="6" width="15" height="15" rx="3"/><rect x="6" y="27" width="15" height="15" rx="3"/><rect x="27" y="27" width="15" height="15" rx="3"/></svg>
+                            <span class="carte-titre">Pool d'agents</span>
+                            <span class="carte-meta">Sans verrou · 20 min</span>
+                        </span>
+                    </a>
+                    <span class="carte-pastille" aria-hidden="true"></span>
+                    <div class="bar" data-module-bar="c01"><span></span></div>
+                    <p class="carte-etat" data-module-label="c01"></p>
+                </li>
+            </ul>
+            <p class="infobulle" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- Bouton principal dans son anneau en pointillé, avec sa note manuscrite. -->
+        <div class="action">
+            <p class="note note-action" aria-hidden="true">7 joueurs,<br>1 plan de jeu</p>
+            <svg class="griffonnage-action" viewBox="0 0 80 50" aria-hidden="true" focusable="false">
+                <path class="trait" d="M4 12 C24 6 46 14 62 30"/>
+                <path class="trait" d="M50 30 L63 31 L62 18"/>
+            </svg>
+            <span class="anneau">
+                <a class="pilule pilule-verte bouton-principal" data-accueil-continuer href="m00-diagnostic.html">Commencer le parcours</a>
+            </span>
+        </div>
+
+    </div>
+</section>
+
+<!-- Le reste de l'accueil, au défilement. -->
+<div class="suite">
+
+    <section id="parcours">
+        <h2>Le parcours</h2>
+        <div class="card">
+            <p>Objectif : que chaque joueur connaisse le playbook de la team avant les officiels. Fil rouge : les séquences officielles du site d'équipe et le guide Lotus. Les modules s'ouvrent dans l'ordre : le suivant se débloque quand toutes les cases du précédent sont cochées. Le module « Pool d'agents » est complémentaire, ouvert tout de suite et hors du total.</p>
+            <div class="bar" data-global-bar><span></span></div>
+            <p class="small" data-global-label>0 % du parcours validé</p>
+            <p class="ligne-joueur">
+                <label for="joueur">Qui es-tu ?</label>
+                <select id="joueur" data-joueur>
+                    <option value="">Choisis ton pseudo</option>
+                </select>
+            </p>
+            <p class="small">Ta progression, tes journaux et tes voies restent dans ce navigateur : chaque joueur suit la sienne sur son appareil.</p>
+            <ul class="liste-modules">
+                <li data-liste="m00"><a href="m00-diagnostic.html">0. Diagnostic du joueur</a><span class="etat-module"></span></li>
+                <li data-liste="m01"><a href="m01-equipe.html">1. La team et les calls</a><span class="etat-module"></span></li>
+                <li data-liste="m02"><a href="m02-lotus.html">2. Lotus : attaque et défense</a><span class="etat-module"></span></li>
+                <li data-liste="m03"><a href="m03-split.html">3. Split : attaque et défense</a><span class="etat-module"></span></li>
+                <li data-liste="m04"><a href="m04-matchs-rex.html">4. Matchs, review et REX</a><span class="etat-module"></span></li>
+                <li data-liste="m05"><a href="m05-validation.html">5. Validation : prêt pour l'offi</a><span class="etat-module"></span></li>
+                <li data-liste="c01"><a href="c01-pool-agents.html">Complément. Pool d'agents</a><span class="etat-module"></span></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="roster">
+        <h2>Le roster</h2>
+        <div class="card">
+            <p>On joue autour d'une identité simple : discipline, timing et communication propre. Le module 1 présente le rôle de chacun et qui donne les calls.</p>
+            <ul class="roster">
+                <li><img src="../pdp_bobe.png" alt="" loading="lazy"><span class="nom">BOBE</span><span class="role">Propriétaire / Flex initiateur smokeur</span></li>
+                <li><img src="../pdp_limule.jpg" alt="" loading="lazy"><span class="nom">Limulesama</span><span class="role">Capitaine / Dueliste</span></li>
+                <li><img src="../pdp_h1mmel.png" alt="" loading="lazy"><span class="nom">h1mmel</span><span class="role">IGL / Flex smokeur sentinel</span></li>
+                <li><img src="../pdp_quentin.jpg" alt="" loading="lazy"><span class="nom">Quentin</span><span class="role">Shot caller / Flex initiateur smoker</span></li>
+                <li><img src="../pdp_warinen.jpg" alt="" loading="lazy"><span class="nom">Warinen</span><span class="role">Flex initiateur smoker</span></li>
+                <li><img src="../pdp_pinelancien.png" alt="" loading="lazy"><span class="nom">Pinelancien</span><span class="role">Flex initiateur smokeur / Sentinel</span></li>
+                <li><img src="../pdp_korraz%C3%A9.webp" alt="" loading="lazy"><span class="nom">kørraZé</span><span class="role">Flex dueliste smokeur</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="a-venir">
+        <h2>À venir</h2>
+        <div class="card">
+            <p class="block-title">Maps sans séquence pour le moment</p>
+            <p>Ces maps n'ont pas encore de playbook sur le site d'équipe. Chacune deviendra un module sur le modèle de Lotus et Split : quand est-ce qu'on hit, setups de défense, puis exercice en pracc.</p>
+            <ul class="maps-a-venir">
+                <li><img src="../Haven.webp" alt="" loading="lazy"><span>Haven</span></li>
+                <li><img src="../Ascent.webp" alt="" loading="lazy"><span>Ascent</span></li>
+                <li><img src="../Bind.webp" alt="" loading="lazy"><span>Bind</span></li>
+                <li><img src="../Breeze.webp" alt="" loading="lazy"><span>Breeze</span></li>
+                <li><img src="../Fracture.webp" alt="" loading="lazy"><span>Fracture</span></li>
+                <li><img src="../Abyss.webp" alt="" loading="lazy"><span>Abyss</span></li>
+                <li><img src="../Icebox.webp" alt="" loading="lazy"><span>Icebox</span></li>
+                <li><img src="../Pearl.webp" alt="" loading="lazy"><span>Pearl</span></li>
+                <li><img src="../Sunset.webp" alt="" loading="lazy"><span>Sunset</span></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="methode">
+        <h2>Comment lire chaque chapitre</h2>
+        <div class="card">
+            <p>Chaque chapitre suit le même ordre : <strong>contexte, objectif, compétences, cours, exercice en pracc</strong>. L'exercice suit le PDCA (Plan, Do, Check, Act) : tu prépares avant le pracc, tu appliques pendant, tu vérifies à la review, puis tu notes dans ton journal ce que tu changes au prochain match.</p>
+            <p>À la fin de chaque chapitre, tu choisis ta voie : <strong>accélérée</strong> (acquis, je passe), <strong>standard</strong> (encore un pracc) ou <strong>renforcée</strong> (à retravailler en custom). La voie ne retire aucun contenu : elle sert à savoir où tu en es.</p>
+        </div>
+        <div class="card cadre">
+            <p class="block-title">Sources de la team</p>
+            <ul>
+                <li><span class="ref ref-hub">Site d'équipe</span> Séquences officielles, roster, matchs et REX : <a href="../index.html">ouvrir le site d'équipe</a>.</li>
+                <li><span class="ref ref-guide">Guide</span> <a href="../LOTUS%20BOBER%20GUIDE.pdf">Guide PDF Lotus Bober</a>, en pratique depuis le 31 mars 2026.</li>
+                <li><span class="ref ref-tracker">Tracker</span> <a href="https://tracker.gg/valorant/premier/teams/c61a628f-25ff-478a-9a01-30d1d4bd6359" target="_blank" rel="noopener noreferrer">Matchs Premier de la team sur Tracker</a>.</li>
+            </ul>
+        </div>
+        <p class="reinitialiser-zone"><button class="reinitialiser" type="button" data-reinitialiser>Réinitialiser ma progression</button></p>
+    </section>
+
+</div>
+
+<script src="js/carrousel.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 0. Diagnostic du joueur - BOBER Académie</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+    <script src="js/progress.js" defer></script>
+</head>
+<body>
+
+<nav class="top">
+    <a href="index.html">← Sommaire</a>
+    <a href="#c1">Chapitre 1</a>
+    <a href="#c2">Chapitre 2</a>
+</nav>
+
+<h1>Module 0. Diagnostic du joueur</h1>
+<p class="lead">Durée : environ 20 min. Objectif : savoir d'où tu pars avant d'apprendre les séquences de la team.</p>
+
+<div class="card ctx">
+    <p class="block-title">Contexte du module</p>
+    <p>Avant les séquences, on fait le point : ton rôle, ton pool d'agents, ce que tu sais déjà des maps du playbook. Le diagnostic n'est pas noté. Il sert à choisir ta voie dans chaque chapitre, et à savoir quoi demander à l'IGL avant le prochain pracc.</p>
+</div>
+
+<div class="card cadre">
+    <p class="block-title">Sources de la team</p>
+    <ul>
+        <li><span class="ref ref-hub">Site d'équipe</span> Onglet Team : ta fiche, tes agents et ta tier list en drag and drop. <a href="../index.html">Ouvrir le site d'équipe</a>.</li>
+        <li><span class="ref ref-tracker">Tracker</span> Ton rang et l'historique Premier de la team : <a href="https://tracker.gg/valorant/premier/teams/c61a628f-25ff-478a-9a01-30d1d4bd6359" target="_blank" rel="noopener noreferrer">matchs de la team sur Tracker</a>.</li>
+    </ul>
+</div>
+
+<h2 id="c1">Chapitre 1. Ton profil de joueur</h2>
+<div class="card ctx">
+    <p class="block-title">Contexte</p>
+    <p>La team compte 7 joueurs pour 5 places, et presque tout le monde est flex. Savoir ce que tu joues le mieux aide l'IGL à construire la compo de chaque map.</p>
+</div>
+<div class="card">
+    <p class="block-title">Objectif</p>
+    <p>Situer ton rôle et ton pool d'agents dans la team.</p>
+</div>
+<div class="card">
+    <p class="block-title">Compétences à valider</p>
+    <label class="check"><input type="checkbox" data-module="m00" data-key="m00-c1-a"> J'ai noté mon rôle principal et mon rôle de secours.</label>
+    <label class="check"><input type="checkbox" data-module="m00" data-key="m00-c1-b"> J'ai listé mes 3 agents les plus confortables.</label>
+    <label class="check"><input type="checkbox" data-module="m00" data-key="m00-c1-c"> J'ai noté mon rang actuel et le rang que je vise en fin de saison.</label>
+</div>
+<div class="card cours">
+    <p class="block-title">Le cours</p>
+    <p>Sur le site d'équipe, chaque joueur a une fiche avec ses agents de confort. Les rôles de la team se combinent souvent : « flex initiateur smokeur », « IGL / flex smokeur sentinel ». Ton rôle principal, c'est celui que tu joues quand la compo est fixée. Ton rôle de secours, c'est celui que tu prends quand un joueur manque.</p>
+    <div class="encart">
+        <p><strong>La tier list du site d'équipe</strong> range tes agents en six colonnes : Pool, Very comfortable, Comfortable, Playable, Not comfortable et Helle nah. Tes 3 agents les plus confortables sont ceux de « Very comfortable ».</p>
+    </div>
+</div>
+<div class="card pdca">
+    <p class="block-title">PDCA</p>
+    <p><strong>Plan.</strong> Ouvre ta fiche dans l'onglet Team du site d'équipe.</p>
+    <p><strong>Do.</strong> Range tes agents dans la tier list, puis note ton rôle principal et ton rôle de secours.</p>
+    <p><strong>Check.</strong> Compare avec les agents listés sur ta fiche : ils doivent se retrouver dans tes colonnes les plus hautes.</p>
+    <p><strong>Act.</strong> Journal : sur quel agent es-tu le plus utile à la compo, et pourquoi ?</p>
+    <p class="act-voie">Choisis ta voie :</p>
+    <div class="voies">
+        <label><input type="radio" name="voie-m00-c1" value="acceleree" data-rythme="m00-c1"> <strong>Accélérée</strong><span class="small">Acquis, je passe</span></label>
+        <label><input type="radio" name="voie-m00-c1" value="standard" data-rythme="m00-c1"> <strong>Standard</strong><span class="small">Encore un pracc</span></label>
+        <label><input type="radio" name="voie-m00-c1" value="renforcee" data-rythme="m00-c1"> <strong>Renforcée</strong><span class="small">À retravailler en custom</span></label>
+    </div>
+</div>
+
+<h2 id="c2">Chapitre 2. Ce que tu sais déjà des maps</h2>
+<div class="card ctx">
+    <p class="block-title">Contexte</p>
+    <p>Deux maps ont un playbook complet : Lotus et Split. Les autres sont à venir. Ce petit test te dit quels modules tu peux suivre en voie accélérée.</p>
+</div>
+<div class="card">
+    <p class="block-title">Objectif</p>
+    <p>Repérer ce que tu sais déjà expliquer sans regarder.</p>
+</div>
+<div class="card">
+    <p class="block-title">Compétences à valider</p>
+    <label class="check"><input type="checkbox" data-module="m00" data-key="m00-c2-a"> J'ai répondu aux trois questions ci-dessous avant d'ouvrir les réponses.</label>
+    <label class="check"><input type="checkbox" data-module="m00" data-key="m00-c2-b"> J'ai noté les points de Lotus et de Split que je ne savais pas expliquer.</label>
+</div>
+<div class="card cours">
+    <p class="block-title">Le cours</p>
+    <p>Réponds dans ta tête, ou à voix haute comme en vocal, puis ouvre la réponse.</p>
+    <details class="reponse">
+        <summary>1. Sur Lotus, dans quels cas on hit C ?</summary>
+        <div><p>Au pistol round, ou si on arrive à faire reculer le Chamber (ou la Jett). Pendant le hit, la KJ reste main pour punir ceux qui traversent au bruit de la porte. Tout est dans le module 2.</p></div>
+    </details>
+    <details class="reponse">
+        <summary>2. Sur Split, que fait la Viper au début du hit A rampe ?</summary>
+        <div><p>Elle pose son poison wall en A en routine, puis sprint en B pour contrôler le B main tout de suite. Voir le module 3.</p></div>
+    </details>
+    <details class="reponse">
+        <summary>3. En défense sur Lotus, comment on répartit les joueurs ?</summary>
+        <div><p>On joue la map en diagonale : soit fort en A, soit fort en C, et toujours neutre en B. On rota fast sur les infos. Voir le module 2, chapitre 4.</p></div>
+    </details>
+</div>
+<div class="card pdca">
+    <p class="block-title">PDCA</p>
+    <p><strong>Plan.</strong> Réponds aux trois questions sans regarder.</p>
+    <p><strong>Do.</strong> Ouvre les réponses et compte tes bonnes réponses.</p>
+    <p><strong>Check.</strong> Trois bonnes réponses : tu peux suivre Lotus et Split en voie accélérée. Moins de deux : voie standard ou renforcée.</p>
+    <p><strong>Act.</strong> Journal : qu'est-ce que tu veux demander à l'IGL avant le prochain pracc ?</p>
+    <p class="act-voie">Choisis ta voie :</p>
+    <div class="voies">
+        <label><input type="radio" name="voie-m00-c2" value="acceleree" data-rythme="m00-c2"> <strong>Accélérée</strong><span class="small">Acquis, je passe</span></label>
+        <label><input type="radio" name="voie-m00-c2" value="standard" data-rythme="m00-c2"> <strong>Standard</strong><span class="small">Encore un pracc</span></label>
+        <label><input type="radio" name="voie-m00-c2" value="renforcee" data-rythme="m00-c2"> <strong>Renforcée</strong><span class="small">À retravailler en custom</span></label>
+    </div>
+</div>
+
+</body>
+</html>

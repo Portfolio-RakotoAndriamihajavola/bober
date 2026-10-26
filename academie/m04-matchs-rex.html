@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4. Matchs, review et REX - BOBER Académie</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+    <script src="js/progress.js" defer></script>
+</head>
+<body>
+
+<nav class="top">
+    <a href="index.html">← Sommaire</a>
+    <a href="#c1">Chapitre 1</a>
+    <a href="#c2">Chapitre 2</a>
+    <a href="#c3">Chapitre 3</a>
+</nav>
+
+<h1>Module 4. Matchs, review et REX</h1>
+<p class="lead">Durée : environ 45 min. Objectif : préparer un officiel, enregistrer le match, puis écrire un REX utile à toute la team.</p>
+
+<div class="card ctx">
+    <p class="block-title">Contexte du module</p>
+    <p>Un match ne sert la team que s'il laisse une trace : le match enregistré, sa review et le REX de la map. Le site d'équipe garde tout au même endroit, map par map.</p>
+</div>
+
+<div class="card cadre">
+    <p class="block-title">Sources de la team</p>
+    <ul>
+        <li><span class="ref ref-hub">Site d'équipe</span> Onglet Matchs : matchs joués et calendrier. Onglet Strategies : REX de chaque map. <a href="../index.html">Ouvrir le site d'équipe</a>.</li>
+        <li><span class="ref ref-tracker">Tracker</span> <a href="https://tracker.gg/valorant/premier/teams/c61a628f-25ff-478a-9a01-30d1d4bd6359" target="_blank" rel="noopener noreferrer">Matchs Premier de la team sur Tracker</a>.</li>
+    </ul>
+</div>
+
+<h2 id="c1">Chapitre 1. Avant le match</h2>
+<div class="card ctx">
+    <p class="block-title">Contexte</p>
+    <p>La saison Premier passée suivait un rythme fixe, du 18 mars aux playoffs de septembre : deux soirs de prac et trois soirs d'officiels par semaine.</p>
+</div>
+<div class="card">
+    <p class="block-title">Objectif</p>
+    <p>Arriver à l'officiel en sachant quelle séquence on joue.</p>
+</div>
+<div class="card">
+    <p class="block-title">Compétences à valider</p>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c1-a"> Je connais le rythme de la semaine : prac et officiels.</label>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c1-b"> Avant un officiel, je relis la séquence de la map jouée.</label>
+</div>
+<div class="card cours">
+    <p class="block-title">Le cours</p>
+    <h3>Le rythme de la saison passée</h3>
+    <div class="tableau-defile">
+        <table>
+            <thead><tr><th>Jour</th><th>Heure</th><th>Séance</th></tr></thead>
+            <tbody>
+                <tr><td>Mercredi</td><td>19 h</td><td>Prac</td></tr>
+                <tr><td>Jeudi</td><td>19 h</td><td>Officiel</td></tr>
+                <tr><td>Vendredi</td><td>20 h</td><td>Prac</td></tr>
+                <tr><td>Samedi</td><td>20 h</td><td>Officiel</td></tr>
+                <tr><td>Dimanche</td><td>19 h</td><td>Officiel</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="small">Le calendrier de la saison à venir sera ajouté sur le site d'équipe, onglet Matchs.</p>
+    <h3>Ta préparation, en trois points</h3>
+    <ul class="signaux">
+        <li>La map jouée : relis son module (Lotus ou Split) et sa séquence.</li>
+        <li>Ton agent : vérifie ton utilitaire à chaque étape.</li>
+        <li>Le niveau adverse : l'ELO moyen de l'équipe adverse, d'Iron à Radiant, comme dans le formulaire du site d'équipe.</li>
+    </ul>
+</div>
+<div class="card pdca">
+    <p class="block-title">PDCA</p>
+    <p><strong>Plan.</strong> La veille de l'officiel, relis la séquence de la map prévue.</p>
+    <p><strong>Do.</strong> Joue le premier round d'attaque avec la séquence, sans improviser.</p>
+    <p><strong>Check.</strong> Après le match, demande-toi si la séquence a été jouée dans l'ordre.</p>
+    <p><strong>Act.</strong> Journal : qu'est-ce qui te manquait pour arriver prêt à cet officiel ?</p>
+    <p class="act-voie">Choisis ta voie :</p>
+    <div class="voies">
+        <label><input type="radio" name="voie-m04-c1" value="acceleree" data-rythme="m04-c1"> <strong>Accélérée</strong><span class="small">Acquis, je passe</span></label>
+        <label><input type="radio" name="voie-m04-c1" value="standard" data-rythme="m04-c1"> <strong>Standard</strong><span class="small">Encore un pracc</span></label>
+        <label><input type="radio" name="voie-m04-c1" value="renforcee" data-rythme="m04-c1"> <strong>Renforcée</strong><span class="small">À retravailler en custom</span></label>
+    </div>
+</div>
+
+<h2 id="c2">Chapitre 2. Après le match : enregistrer et reviewer</h2>
+<div class="card ctx">
+    <p class="block-title">Contexte</p>
+    <p>Un match enregistré sur le site d'équipe devient choisissable dans le REX de sa map. Sans lui, pas de REX lié.</p>
+</div>
+<div class="card">
+    <p class="block-title">Objectif</p>
+    <p>Enregistrer un match complet et retrouver sa trace sur Tracker.</p>
+</div>
+<div class="card">
+    <p class="block-title">Compétences à valider</p>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c2-a"> Je sais ajouter un match joué sur le site d'équipe : adversaire, date, map, type, ELO et review.</label>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c2-b"> J'ai ouvert le Tracker Premier de la team et retrouvé notre dernier match.</label>
+</div>
+<div class="card cours">
+    <p class="block-title">Le cours</p>
+    <p>Dans l'onglet Matchs, le formulaire « Ajouter un match joué » demande :</p>
+    <div class="tableau-defile">
+        <table>
+            <thead><tr><th>Champ</th><th>À quoi il sert</th></tr></thead>
+            <tbody>
+                <tr><td>Équipe adverse et date</td><td>Retrouver le match plus tard.</td></tr>
+                <tr><td>Map</td><td>Relier le match au REX de la map.</td></tr>
+                <tr><td>Type : officiel ou pracc</td><td>Séparer ce qui compte au classement de l'entraînement.</td></tr>
+                <tr><td>ELO moyen adverse</td><td>Mettre le résultat en perspective, d'Iron à Radiant.</td></tr>
+                <tr><td>PDF de review</td><td>Garder la review avec le match.</td></tr>
+                <tr><td>Liens Tracker et YouTube (optionnels)</td><td>Revoir les stats et la VOD.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="encart or">
+        <p><strong>Accès.</strong> Le site d'équipe est réservé aux membres connectés : connecte-toi avec ton pseudo avant d'ajouter un match.</p>
+    </div>
+</div>
+<div class="card pdca">
+    <p class="block-title">PDCA</p>
+    <p><strong>Plan.</strong> Après le prochain officiel, garde le lien Tracker et, si possible, la VOD.</p>
+    <p><strong>Do.</strong> Ajoute le match sur le site d'équipe le soir même.</p>
+    <p><strong>Check.</strong> Vérifie que le match apparaît dans la liste du REX de sa map.</p>
+    <p><strong>Act.</strong> Journal : quelle stat du Tracker t'a le plus surpris ?</p>
+    <p class="act-voie">Choisis ta voie :</p>
+    <div class="voies">
+        <label><input type="radio" name="voie-m04-c2" value="acceleree" data-rythme="m04-c2"> <strong>Accélérée</strong><span class="small">Acquis, je passe</span></label>
+        <label><input type="radio" name="voie-m04-c2" value="standard" data-rythme="m04-c2"> <strong>Standard</strong><span class="small">Encore un pracc</span></label>
+        <label><input type="radio" name="voie-m04-c2" value="renforcee" data-rythme="m04-c2"> <strong>Renforcée</strong><span class="small">À retravailler en custom</span></label>
+    </div>
+</div>
+
+<h2 id="c3">Chapitre 3. Écrire un REX</h2>
+<div class="card ctx">
+    <p class="block-title">Contexte</p>
+    <p>Le REX (retour d'expérience) est un commentaire lié à une map et à un match enregistré. Toute la team le lit avant de rejouer la map.</p>
+</div>
+<div class="card">
+    <p class="block-title">Objectif</p>
+    <p>Écrire un REX court que la team peut appliquer au prochain match.</p>
+</div>
+<div class="card">
+    <p class="block-title">Compétences à valider</p>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c3-a"> J'ai écrit un REX lié à un match enregistré.</label>
+    <label class="check"><input type="checkbox" data-module="m04" data-key="m04-c3-b"> Mon REX contient un fait, une cause et une action.</label>
+</div>
+<div class="card cours">
+    <p class="block-title">Le cours</p>
+    <p>Un bon REX tient en trois phrases :</p>
+    <ol>
+        <li><strong>Un fait</strong> : ce qui s'est passé, avec le round ou le moment.</li>
+        <li><strong>Une cause</strong> : pourquoi, en lien avec la séquence ou le principe de la map.</li>
+        <li><strong>Une action</strong> : ce qu'on change au prochain match.</li>
+    </ol>
+    <div class="encart">
+        <p><strong>Exemple sur Lotus.</strong> « Rounds 4 à 6 : on a perdu trois retakes en C. On était forts en A et faibles en C, mais personne n'est resté dans la zone gagnée après la rota. Au prochain match, on laisse un joueur en place pour l'info de late-rota. »</p>
+    </div>
+</div>
+<div class="card pdca">
+    <p class="block-title">PDCA</p>
+    <p><strong>Plan.</strong> Pendant la review, note un moment clé du match.</p>
+    <p><strong>Do.</strong> Écris le REX sur la map du match, dans l'onglet Strategies du site d'équipe.</p>
+    <p><strong>Check.</strong> Relis-le : fait, cause et action sont-ils là ?</p>
+    <p><strong>Act.</strong> Journal : quel REX d'un coéquipier t'a le plus aidé, et pourquoi ?</p>
+    <p class="act-voie">Choisis ta voie :</p>
+    <div class="voies">
+        <label><input type="radio" name="voie-m04-c3" value="acceleree" data-rythme="m04-c3"> <strong>Accélérée</strong><span class="small">Acquis, je passe</span></label>
+        <label><input type="radio" name="voie-m04-c3" value="standard" data-rythme="m04-c3"> <strong>Standard</strong><span class="small">Encore un pracc</span></label>
+        <label><input type="radio" name="voie-m04-c3" value="renforcee" data-rythme="m04-c3"> <strong>Renforcée</strong><span class="small">À retravailler en custom</span></label>
+    </div>
+</div>
+
+</body>
+</html>
