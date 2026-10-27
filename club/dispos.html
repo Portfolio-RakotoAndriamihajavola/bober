@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispos · BOBER #WIPR</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+</head>
+<body data-page="dispos">
+
+<div data-bandeau></div>
+
+<main class="page page-dispos">
+
+    <section class="entete-page">
+        <div class="entete-page-texte">
+            <p class="surtitre">Dispos de la team</p>
+            <h1 data-titre-semaine>Cette semaine</h1>
+            <p class="entete-meta" data-meta-semaine></p>
+        </div>
+        <div class="semaine-nav" role="group" aria-label="Changer de semaine">
+            <button type="button" class="bouton-icone" data-semaine="-1" aria-label="Semaine précédente">←</button>
+            <button type="button" class="bouton-contour" data-semaine="0">Cette semaine</button>
+            <button type="button" class="bouton-icone" data-semaine="1" aria-label="Semaine suivante">→</button>
+        </div>
+    </section>
+
+    <div class="deux-colonnes">
+        <section class="bloc" aria-labelledby="titre-mes-dispos">
+            <h2 id="titre-mes-dispos">Mes dispos</h2>
+            <div data-mes-dispos></div>
+        </section>
+        <section class="bloc" aria-labelledby="titre-equipe">
+            <h2 id="titre-equipe">La team</h2>
+            <div data-equipe></div>
+        </section>
+    </div>
+
+</main>
+
+<script src="js/donnees.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/dispos.js"></script>
+</body>
+</html>

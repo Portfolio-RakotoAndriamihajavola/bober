@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOBER #WIPR</title>
+    <meta name="description" content="Le QG de la team Valorant BOBER #WIPR : strats par map, dispos de la semaine, matchs et roster.">
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+</head>
+<body data-page="accueil">
+
+<!-- Héros : cadre 1440 × 1080 centré, tout est placé en unités de cadre (--u), comme le e-learning. -->
+<section class="heros" aria-label="Accueil du club">
+    <div class="cadre-heros">
+
+        <header class="barre">
+            <a class="logo" href="index.html"><img src="../Logo%20bober%20H.png" alt="" width="320" height="277" draggable="false"><span>BOBER #WIPR</span></a>
+            <nav class="menu" aria-label="Sections du club">
+                <a href="strats.html" data-cube>Strats</a>
+                <a href="dispos.html" data-cube>Dispos</a>
+                <a href="matchs.html" data-cube>Matchs</a>
+                <a href="#roster">Roster</a>
+            </nav>
+            <div class="pilules">
+                <a class="pilule pilule-sombre" href="../index.html">Ancien site</a>
+                <span data-place-joueur></span>
+            </div>
+        </header>
+
+        <p class="badge" data-badge>Aucun match prévu</p>
+
+        <h1 class="titre-heros">
+            <span class="ligne ligne-1">Le QG de la team</span>
+            <span class="ligne ligne-2">BOBER #WIPR</span>
+        </h1>
+
+        <p class="sous-titre">
+            <span>Les strats rangées par map, les dispos de la semaine</span>
+            <span>et les prochains matchs, au même endroit pour les sept.</span>
+            <span>Fais glisser les maps, puis ouvre celle que tu veux revoir.</span>
+        </p>
+
+        <!-- Notes manuscrites et traits qui se dessinent seuls (décoratifs). -->
+        <svg class="griffonnages" viewBox="0 0 1440 1080" aria-hidden="true" focusable="false">
+            <path class="trait" d="M270 379 L257 413"/>
+            <path class="trait" d="M285 379 L272 413"/>
+            <path class="trait" d="M1180 404 C1250 392 1326 412 1312 470"/>
+            <path class="trait" d="M1297 455 L1312 472 L1326 452"/>
+        </svg>
+        <p class="note note-prochain" aria-hidden="true">Choisis <br>ta map</p>
+
+        <!-- Interrupteur « Map pool », créé par commun.js. -->
+        <span data-filtre-maps></span>
+
+        <!-- Carrousel courbé : une carte par map, créée par accueil.js. -->
+        <div class="rangee" role="region" aria-roledescription="carrousel" aria-label="Maps et leurs strats. Flèches gauche et droite pour défiler.">
+            <ul class="cartes" data-cartes></ul>
+        </div>
+
+        <!-- Bouton principal dans son anneau en pointillé, avec sa note manuscrite. -->
+        <div class="action">
+            <p class="note note-action" aria-hidden="true" data-note-action>Tes dispos de <br>la semaine</p>
+            <svg class="griffonnage-action" viewBox="0 0 80 50" aria-hidden="true" focusable="false">
+                <path class="trait" d="M4 12 C24 6 46 14 62 30"/>
+                <path class="trait" d="M50 30 L63 31 L62 18"/>
+            </svg>
+            <span class="anneau">
+                <a class="pilule pilule-verte bouton-principal" href="dispos.html" data-cube data-bouton-dispos>Remplir mes dispos</a>
+            </span>
+        </div>
+
+    </div>
+</section>
+
+<!-- Le reste de l'accueil, au défilement. -->
+<main class="suite">
+
+    <p class="ligne-etat" data-ligne-etat></p>
+
+    <div class="tuiles">
+        <section class="tuile" id="semaine" aria-labelledby="titre-semaine">
+            <h2 id="titre-semaine">Cette semaine</h2>
+            <div data-semaine></div>
+        </section>
+        <section class="tuile" id="prochains" aria-labelledby="titre-prochains">
+            <h2 id="titre-prochains">Prochains matchs</h2>
+            <div data-prochains></div>
+        </section>
+    </div>
+
+    <section id="dernieres" aria-labelledby="titre-dernieres">
+        <h2 id="titre-dernieres">Dernières strats</h2>
+        <ul class="strats-courtes" data-dernieres></ul>
+    </section>
+
+    <section id="roster" aria-labelledby="titre-roster">
+        <h2 id="titre-roster">Roster</h2>
+        <ul class="roster" data-roster></ul>
+    </section>
+
+</main>
+
+<script src="js/donnees.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/accueil.js"></script>
+<script src="js/carrousel.js"></script>
+</body>
+</html>
