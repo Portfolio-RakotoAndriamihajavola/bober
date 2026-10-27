@@ -63,7 +63,9 @@
 
   function rendreEntete(map, strats) {
     var att = strats.filter(function (s) { return s.cote === 'attaque'; }).length;
-    document.querySelector('[data-map-image]').src = '../' + map.image;
+    var fond = document.querySelector('[data-map-image]');
+    fond.hidden = !map.image;
+    if (map.image) fond.src = '../' + map.image;
     document.querySelector('[data-map-nom]').textContent = map.nom;
     document.querySelector('[data-map-surtitre]').textContent = 'Strats · ' + map.sites.length + ' sites';
     document.querySelector('[data-map-meta]').textContent = strats.length
@@ -75,15 +77,17 @@
     document.title = 'Strats ' + map.nom + ' · BOBER #WIPR';
   }
 
+  // Maps proposées : celles du pool (ou toutes, selon l'interrupteur), plus la map ouverte.
   function rendreChoixMaps() {
     var liste = document.querySelector('[data-maps-choix]');
     Club.vider(liste);
-    Club.MAPS.forEach(function (map) {
+    Club.mapsVisibles(etat.map).forEach(function (map, i) {
       var n = Club.stratsDe(map.id).length;
       var ici = map.id === etat.map;
-      liste.appendChild(el('li', {}, [
-        el('a', { href: '#' + map.id, 'data-map': map.id, 'aria-current': ici ? 'true' : false, 'class': n ? '' : 'vide' }, [
-          el('img', { src: '../' + map.image, alt: '', loading: 'lazy' }, []),
+      liste.appendChild(el('li', { style: '--i:' + i }, [
+        el('a', { href: '#' + map.id, 'data-map': map.id, 'aria-current': ici ? 'true' : false,
+          'class': (n ? '' : 'vide') + (map.pool ? '' : ' hors-pool'), title: map.pool ? '' : map.nom + ' : hors du map pool' }, [
+          Club.vignetteMap(map),
           el('span', { 'class': 'nom' }, [map.nom]),
           el('span', { 'class': 'compte', 'aria-label': Club.pluriel(n, 'strat', 'strats') }, [String(n)])
         ])
@@ -549,6 +553,17 @@
   }
   window.addEventListener('popstate', suivreAdresse);
   window.addEventListener('hashchange', suivreAdresse);
+
+  // Interrupteur « Map pool » au début de la rangée des maps ; les puces se redessinent en cascade.
+  var placeFiltre = document.querySelector('[data-filtre-maps]');
+  if (placeFiltre) placeFiltre.parentNode.replaceChild(Club.interrupteurPool(), placeFiltre);
+  document.addEventListener('club-filtre-maps', function () {
+    var liste = document.querySelector('[data-maps-choix]');
+    rendreChoixMaps();
+    liste.classList.remove('entree');
+    void liste.offsetWidth;
+    liste.classList.add('entree');
+  });
 
   // Données reçues de la team : on redessine sans fermer les fiches ouvertes ni bouger la page.
   document.addEventListener('club-donnees', function () {

@@ -29,11 +29,11 @@
   }
 
   function carte(map) {
-    return el('li', { 'class': 'carte map', 'data-carte': map.id }, [
-      el('img', { 'class': 'carte-fond', src: '../' + map.image, alt: '', draggable: 'false' }, []),
+    return el('li', { 'class': 'carte map' + (map.image ? '' : ' sans-image') + (map.pool ? '' : ' hors-pool'), 'data-carte': map.id }, [
+      map.image ? el('img', { 'class': 'carte-fond', src: '../' + map.image, alt: '', draggable: 'false' }, []) : null,
       el('a', { 'class': 'carte-lien', href: 'strats.html#' + map.id, 'data-href': 'strats.html#' + map.id, draggable: 'false' }, [
         el('span', { 'class': 'carte-corps' }, [
-          el('span', { 'class': 'carte-num' }, [map.sites.length + ' sites']),
+          el('span', { 'class': 'carte-num' }, [map.sites.length + ' sites' + (map.pool ? '' : ' · hors pool')]),
           el('svg', { 'class': 'picto', viewBox: '0 0 48 48', 'aria-hidden': 'true' }, [el('path', { d: PICTO_VIDE }, [])]),
           el('span', { 'class': 'carte-titre' }, [map.nom]),
           el('span', { 'class': 'carte-meta' }, [''])
@@ -179,7 +179,7 @@
       var auteur = Club.personne(s.auteur);
       zone.appendChild(el('li', {}, [
         el('a', { href: 'strats.html#' + s.id }, [
-          el('img', { src: image ? image.image : '../' + map.image, alt: '', loading: 'lazy' }, []),
+          image ? el('img', { src: image.image, alt: '', loading: 'lazy' }, []) : Club.vignetteMap(map),
           el('span', { 'class': 'texte' }, [
             el('span', { 'class': 'surtitre' }, [map.nom + ' · ' + (s.cote === 'attaque' ? 'Attaque' : 'Défense') + ' ' + s.site]),
             el('strong', {}, [s.titre]),
@@ -226,8 +226,28 @@
   }
 
   // Les cartes existent avant carrousel.js, qui les place et les clone au besoin.
+  // Toutes les maps ont leur carte ; le filtre « map pool » masque celles hors du pool,
+  // sauf la map du prochain match. Renvoie true si une carte a été masquée ou montrée.
   var liste = document.querySelector('[data-cartes]');
-  if (liste) Club.MAPS.forEach(function (map) { liste.appendChild(carte(map)); });
+  function filtrerCartes() {
+    if (!liste) return false;
+    var visibles = Club.mapsVisibles(mapDuProchainMatch()).map(function (m) { return m.id; });
+    var change = false;
+    liste.querySelectorAll('.carte:not(.copie)').forEach(function (n) {
+      var cache = visibles.indexOf(n.getAttribute('data-carte')) < 0;
+      if (n.hidden !== cache) { n.hidden = cache; change = true; }
+    });
+    return change;
+  }
+  if (liste) {
+    Club.MAPS.forEach(function (map) { liste.appendChild(carte(map)); });
+    filtrerCartes();
+    document.addEventListener('club-filtre-maps', function () {
+      if (filtrerCartes()) document.dispatchEvent(new CustomEvent('cartes-filtrees'));
+    });
+  }
+  var placeFiltre = document.querySelector('[data-filtre-maps]');
+  if (placeFiltre) placeFiltre.parentNode.replaceChild(Club.interrupteurPool('filtre-heros'), placeFiltre);
   var place = document.querySelector('[data-place-joueur]');
   if (place) place.parentNode.replaceChild(Club.pastilleJoueur('pilule pilule-verte'), place);
   rafraichirLigneEtat();
@@ -239,6 +259,7 @@
     var maintenant = mapDuProchainMatch();
     if (maintenant !== prochaineAvant) {
       prochaineAvant = maintenant;
+      if (filtrerCartes()) document.dispatchEvent(new CustomEvent('cartes-filtrees'));
       document.dispatchEvent(new CustomEvent('cartes-pretes'));
     }
   });

@@ -8,7 +8,6 @@
   if (!rangee) return;
 
   var liste = rangee.querySelector('.cartes');
-  var originales = Array.prototype.slice.call(liste.querySelectorAll('.carte'));
   var PAS = 196; // écart entre deux cartes, en unités de cadre
   var VITESSE = 50; // défilement automatique, unités par seconde, de droite à gauche
   var COINS = 15; // rayon des coins, en unités
@@ -16,22 +15,29 @@
   var SEUIL_GLISSER = 6; // en pixels : au-delà, c'est un glisser et non un clic
   var RUBAN_MIN = 2100; // longueur minimale du ruban, en unités, pour qu'il couvre tout le cylindre
 
-  // Peu de cartes : on double la rangée pour que le ruban fasse le tour sans trou.
-  // Les copies sont décoratives : hors de l'arbre d'accessibilité et hors du parcours au clavier.
-  var copies = 0;
-  while ((originales.length * (copies + 1)) * PAS < RUBAN_MIN && copies < 4) {
-    copies++;
-    originales.forEach(function (carte) {
-      var copie = carte.cloneNode(true);
-      copie.setAttribute('aria-hidden', 'true');
-      copie.classList.add('copie');
-      copie.querySelectorAll('a').forEach(function (a) { a.setAttribute('tabindex', '-1'); });
-      liste.appendChild(copie);
-    });
+  // Cartes visibles (le filtre « map pool » masque les autres). Peu de cartes : on double la
+  // rangée pour que le ruban fasse le tour sans trou. Les copies sont décoratives : hors de
+  // l'arbre d'accessibilité et hors du parcours au clavier. Refait à chaque changement de filtre.
+  var originales = [], cartes = [], N = 0, levees = [];
+  function monter() {
+    liste.querySelectorAll('.carte.copie').forEach(function (c) { c.remove(); });
+    originales = Array.prototype.slice.call(liste.querySelectorAll('.carte:not([hidden])'));
+    var copies = 0;
+    while (originales.length && (originales.length * (copies + 1)) * PAS < RUBAN_MIN && copies < 4) {
+      copies++;
+      originales.forEach(function (carte) {
+        var copie = carte.cloneNode(true);
+        copie.setAttribute('aria-hidden', 'true');
+        copie.classList.add('copie');
+        copie.querySelectorAll('a').forEach(function (a) { a.setAttribute('tabindex', '-1'); });
+        liste.appendChild(copie);
+      });
+    }
+    cartes = Array.prototype.slice.call(liste.querySelectorAll('.carte:not([hidden])'));
+    N = cartes.length;
+    levees = cartes.map(function () { return 0; });
   }
-
-  var cartes = Array.prototype.slice.call(liste.querySelectorAll('.carte'));
-  var N = cartes.length;
+  monter();
   var mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)');
   var telephone = window.matchMedia('(max-width: 820px)');
 
@@ -50,7 +56,6 @@
   var cible = null; // décalage visé (focus clavier, centrage de la map du prochain match)
   var facteurAuto = 1; // 1 : défilement normal ; 0 : arrêt (survol, focus)
   var interagi = false;
-  var levees = cartes.map(function () { return 0; });
   var m = mesurer();
 
   // --- Géométrie --------------------------------------------------------------
@@ -369,6 +374,32 @@
     if (interagi) return;
     var prochaine = liste.querySelector('.carte.prochain:not(.copie)');
     if (prochaine) centrer(cartes.indexOf(prochaine));
+  });
+
+  // Filtre « map pool » changé (accueil.js a masqué ou montré des cartes) : on refait le ruban,
+  // la map du centre y reste si elle est encore là, et la rangée remonte en fondu.
+  document.addEventListener('cartes-filtrees', function () {
+    var auCentre = '';
+    var mieux = Infinity;
+    cartes.forEach(function (c, i) {
+      var t = Math.abs(ecart(i));
+      if (t < mieux) { mieux = t; auCentre = c.getAttribute('data-carte'); }
+    });
+    survol = -1;
+    monter();
+    if (!N) return;
+    var i = indexDe(auCentre);
+    if (i < 0) {
+      var prochaine = liste.querySelector('.carte.prochain:not(.copie):not([hidden])');
+      i = prochaine ? cartes.indexOf(prochaine) : 0;
+    }
+    centrer(i, true);
+    placer();
+    if (!mouvementReduit.matches && rangee.animate) {
+      rangee.animate([
+        { transform: 'translateY(36px)', opacity: 0 }, { transform: 'none', opacity: 1 }
+      ], { duration: 600, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+    }
   });
 
   // --- Entrée ---------------------------------------------------------------

@@ -27,7 +27,7 @@
   }
   function lienMap(texte) {
     var map = Club.mapDepuis(texte);
-    if (map) return el('a', { href: 'strats.html#' + map.id, 'class': 'puce-map' }, [el('img', { src: '../' + map.image, alt: '', loading: 'lazy' }, []), 'Strats ' + map.nom]);
+    if (map) return el('a', { href: 'strats.html#' + map.id, 'class': 'puce-map' }, [Club.vignetteMap(map), 'Strats ' + map.nom]);
     return texte ? el('span', { 'class': 'puce-map' }, [texte]) : null;
   }
 

@@ -54,6 +54,14 @@ il récupère les données fraîches et rejoue ses changements par-dessus, pour 
 Tout est dans `js/donnees.js` : `JOUEURS`, `STAFF`, `MAPS` (sites, guide PDF éventuel) et `AGENTS`.
 Le pseudo choisi sur le site est gardé sur l'appareil ; il n'y a pas de mot de passe.
 
+**Map pool.** L'interrupteur « Map pool » de l'accueil et de la page des strats n'affiche que les maps
+marquées `pool: true` dans `MAPS` (activé par défaut, chaque joueur peut le couper ; son choix reste sur
+son appareil). Quand Riot change le pool, déplace les `pool: true` et mets à jour `POOL_NOM`.
+Pool actuel (V26 Acte 6) : Abyss, Bind, Corrode, Haven, Lotus, Summit, Sunset.
+
+**Image d'une map.** Corrode et Summit n'ont pas encore d'image (`image: ''`) : leur carte a un fond uni.
+Pour en ajouter une, dépose `Corrode.webp` (ou `Summit.webp`) à la racine du dépôt et renseigne `image`.
+
 ## Fichiers
 
 ```

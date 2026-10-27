@@ -7,18 +7,23 @@
 
   // --- Référentiel ------------------------------------------------------------
 
+  // pool : map du map pool compétitif en cours. Riot le change environ tous les deux mois :
+  // mets à jour ces drapeaux et POOL_NOM. image : fichier à la racine du dépôt, ou '' (fond uni).
+  Club.POOL_NOM = 'V26 Acte 6';
   Club.MAPS = [
-    { id: 'abyss', nom: 'Abyss', image: 'Abyss.webp', sites: ['A', 'B'] },
+    { id: 'abyss', nom: 'Abyss', image: 'Abyss.webp', sites: ['A', 'B'], pool: true },
     { id: 'ascent', nom: 'Ascent', image: 'Ascent.webp', sites: ['A', 'B'] },
-    { id: 'bind', nom: 'Bind', image: 'Bind.webp', sites: ['A', 'B'] },
+    { id: 'bind', nom: 'Bind', image: 'Bind.webp', sites: ['A', 'B'], pool: true },
     { id: 'breeze', nom: 'Breeze', image: 'Breeze.webp', sites: ['A', 'B'] },
+    { id: 'corrode', nom: 'Corrode', image: '', sites: ['A', 'B'], pool: true },
     { id: 'fracture', nom: 'Fracture', image: 'Fracture.webp', sites: ['A', 'B'] },
-    { id: 'haven', nom: 'Haven', image: 'Haven.webp', sites: ['A', 'B', 'C'] },
+    { id: 'haven', nom: 'Haven', image: 'Haven.webp', sites: ['A', 'B', 'C'], pool: true },
     { id: 'icebox', nom: 'Icebox', image: 'Icebox.webp', sites: ['A', 'B'] },
-    { id: 'lotus', nom: 'Lotus', image: 'Lotus.webp', sites: ['A', 'B', 'C'], guide: 'LOTUS BOBER GUIDE.pdf' },
+    { id: 'lotus', nom: 'Lotus', image: 'Lotus.webp', sites: ['A', 'B', 'C'], guide: 'LOTUS BOBER GUIDE.pdf', pool: true },
     { id: 'pearl', nom: 'Pearl', image: 'Pearl.webp', sites: ['A', 'B'] },
     { id: 'split', nom: 'Split', image: 'Split.webp', sites: ['A', 'B'] },
-    { id: 'sunset', nom: 'Sunset', image: 'Sunset.webp', sites: ['A', 'B'] }
+    { id: 'summit', nom: 'Summit', image: '', sites: ['A', 'B'], pool: true },
+    { id: 'sunset', nom: 'Sunset', image: 'Sunset.webp', sites: ['A', 'B'], pool: true }
   ];
 
   // Zones en plus des sites : le mid, et « Global » pour un setup ou un principe de toute la map.
@@ -371,6 +376,21 @@
     for (var i = 0; i < Club.MAPS.length; i++) if (Club.MAPS[i].id === id) return Club.MAPS[i];
     return null;
   };
+  // Filtre « map pool » : choix de chaque joueur, gardé sur son appareil, commun à l'accueil et aux strats.
+  var CLE_FILTRE_MAPS = 'boberClubFiltreMaps';
+  Club.filtrePool = function () {
+    try { return localStorage.getItem(CLE_FILTRE_MAPS) !== 'toutes'; } catch (e) { return true; }
+  };
+  Club.choisirFiltrePool = function (actif) {
+    try { localStorage.setItem(CLE_FILTRE_MAPS, actif ? 'pool' : 'toutes'); } catch (e) { /* stockage bloqué */ }
+    document.dispatchEvent(new CustomEvent('club-filtre-maps', { detail: actif }));
+  };
+  // Maps à montrer selon le filtre ; garder : id d'une map affichée même hors pool (la map ouverte).
+  Club.mapsVisibles = function (garder) {
+    if (!Club.filtrePool()) return Club.MAPS.slice();
+    return Club.MAPS.filter(function (m) { return m.pool || m.id === garder; });
+  };
+
   // Reconnaît « Lotus », « lotus » ou « LOTUS » (les matchs de l'ancien site stockent le nom).
   Club.mapDepuis = function (texte) {
     var t = String(texte || '').trim().toLowerCase();

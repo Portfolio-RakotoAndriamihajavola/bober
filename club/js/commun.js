@@ -332,6 +332,33 @@
     }
   };
 
+  // Vignette d'une map : son image, ou un carré à l'initiale tant que le dépôt n'a pas l'image.
+  Club.vignetteMap = function (map) {
+    if (map.image) return el('img', { src: '../' + map.image, alt: '', loading: 'lazy' }, []);
+    return el('span', { 'class': 'vignette-vide', 'aria-hidden': 'true' }, [map.nom.charAt(0)]);
+  };
+
+  // Interrupteur « Map pool » : n'affiche que les maps du pool compétitif, ou toutes.
+  Club.interrupteurPool = function (classe) {
+    var nbPool = Club.MAPS.filter(function (m) { return m.pool; }).length;
+    var compte = el('span', { 'class': 'interrupteur-compte' }, ['']);
+    var b = el('button', { type: 'button', role: 'switch', 'class': 'interrupteur' + (classe ? ' ' + classe : ''),
+      title: 'Map pool ' + Club.POOL_NOM + ' : ' + Club.MAPS.filter(function (m) { return m.pool; }).map(function (m) { return m.nom; }).join(', ') }, [
+      el('span', { 'class': 'interrupteur-piste', 'aria-hidden': 'true' }, [el('span', { 'class': 'interrupteur-bouton' }, [])]),
+      el('span', { 'class': 'interrupteur-texte' }, ['Map pool']),
+      compte
+    ]);
+    function maj() {
+      var actif = Club.filtrePool();
+      b.setAttribute('aria-checked', actif ? 'true' : 'false');
+      compte.textContent = actif ? nbPool + ' maps' : 'toutes les maps';
+    }
+    b.addEventListener('click', function () { Club.choisirFiltrePool(!Club.filtrePool()); });
+    document.addEventListener('club-filtre-maps', maj);
+    maj();
+    return b;
+  };
+
   // Puces d'agents : icône quand elle existe, couleur du rôle sinon.
   Club.puceAgent = function (nom) {
     var a = Club.agent(nom);
