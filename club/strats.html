@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strats · BOBER #WIPR</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+</head>
+<body data-page="strats">
+
+<div data-bandeau></div>
+
+<main class="page-strats">
+
+    <!-- En-tête de la map : la carte cliquée sur l'accueil s'y déploie. -->
+    <section class="entete-map" data-entete-map>
+        <img class="entete-fond" data-map-image src="../Lotus.webp" alt="">
+        <div class="entete-texte">
+            <p class="surtitre" data-map-surtitre>Strats</p>
+            <h1 data-map-nom>Lotus</h1>
+            <p class="entete-meta" data-map-meta></p>
+        </div>
+        <div class="entete-actions">
+            <a class="pilule pilule-sombre" data-map-guide href="../LOTUS%20BOBER%20GUIDE.pdf" target="_blank" rel="noopener" hidden>Guide PDF</a>
+            <button class="cta" type="button" data-ajouter>Ajouter une strat</button>
+        </div>
+    </section>
+
+    <nav class="maps-choix" aria-label="Choisir une map">
+        <ul data-maps-choix></ul>
+    </nav>
+
+    <div class="filtres" role="search">
+        <div class="segments" role="radiogroup" aria-label="Côté">
+            <button type="button" role="radio" aria-checked="true" data-cote="">Tout</button>
+            <button type="button" role="radio" aria-checked="false" data-cote="attaque">Attaque</button>
+            <button type="button" role="radio" aria-checked="false" data-cote="defense">Défense</button>
+        </div>
+        <div class="segments" role="radiogroup" aria-label="Site" data-sites-filtre></div>
+        <label class="recherche">
+            <span class="hors-ecran">Chercher une strat</span>
+            <input type="search" data-recherche placeholder="Chercher : Viper, retake, pistol…" autocomplete="off">
+        </label>
+    </div>
+
+    <div class="corps">
+        <aside class="sommaire" aria-label="Strats de la map">
+            <div data-plan></div>
+        </aside>
+        <div class="liste-strats" data-liste-strats></div>
+    </div>
+
+</main>
+
+<!-- Formulaire d'ajout et de modification d'une strat. -->
+<dialog class="dialogue dialogue-strat" aria-labelledby="titre-formulaire" data-dialogue-strat>
+    <form method="dialog" data-formulaire novalidate>
+        <h2 id="titre-formulaire" data-titre-formulaire>Ajouter une strat</h2>
+
+        <div class="champs-ligne">
+            <label class="champ champ-large">Titre
+                <input name="titre" required maxlength="80" placeholder="Hit A après le fight main">
+            </label>
+        </div>
+        <div class="champs-ligne">
+            <label class="champ">Map
+                <select name="map" data-champ-map></select>
+            </label>
+            <fieldset class="champ">
+                <legend>Côté</legend>
+                <span class="segments">
+                    <label><input type="radio" name="cote" value="attaque" checked> Attaque</label>
+                    <label><input type="radio" name="cote" value="defense"> Défense</label>
+                </span>
+            </fieldset>
+            <label class="champ">Site
+                <select name="site" data-champ-site></select>
+            </label>
+        </div>
+
+        <label class="champ">Quand la jouer
+            <textarea name="quand" rows="3" placeholder="Un signal par ligne : open kill main, pistol round…"></textarea>
+        </label>
+
+        <fieldset class="champ">
+            <legend>Agents utilisés</legend>
+            <div class="choix-agents" data-choix-agents></div>
+        </fieldset>
+
+        <fieldset class="champ">
+            <legend>Étapes</legend>
+            <ol class="etapes-saisie" data-etapes-saisie></ol>
+            <button type="button" class="bouton-contour" data-ajouter-etape>Ajouter une étape</button>
+            <p class="small">Image : une capture (réduite automatiquement) ou un lien vers une image en ligne.</p>
+        </fieldset>
+
+        <label class="champ">Rôle de chacun
+            <textarea name="notes" rows="3" placeholder="Viper : poison wall en A, puis sprint en B…"></textarea>
+        </label>
+        <label class="champ">Lien vidéo (optionnel)
+            <input name="video" type="url" placeholder="https://youtube.com/…">
+        </label>
+
+        <p class="erreur" data-erreur role="alert"></p>
+        <div class="pied-dialogue">
+            <button type="button" class="bouton-texte" data-annuler>Annuler</button>
+            <button type="submit" class="cta" data-enregistrer>Enregistrer</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="js/donnees.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/strats.js"></script>
+</body>
+</html>

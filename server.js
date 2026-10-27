@@ -13,7 +13,9 @@ const ALLOWED_KEYS = new Set([
   'boberComments',
   'boberPlayerAccounts',
   'boberTeamTierState',
-  'boberAttendancePolls'
+  'boberAttendancePolls',
+  'boberClubStrats',
+  'boberClubDispos'
 ]);
 
 const MIME_TYPES = {

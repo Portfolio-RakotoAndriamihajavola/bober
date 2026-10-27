@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matchs · BOBER #WIPR</title>
+    <link rel="icon" type="image/png" href="../Logo%20bober.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Caveat:wght@600&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/cube.js"></script>
+</head>
+<body data-page="matchs">
+
+<div data-bandeau></div>
+
+<main class="page page-matchs">
+
+    <section class="entete-page">
+        <div class="entete-page-texte">
+            <p class="surtitre">Matchs</p>
+            <h1>Prochains matchs et résultats</h1>
+            <p class="entete-meta" data-bilan></p>
+        </div>
+        <div class="entete-actions">
+            <a class="pilule pilule-sombre" href="https://tracker.gg/valorant/premier/teams/c61a628f-25ff-478a-9a01-30d1d4bd6359" target="_blank" rel="noopener noreferrer">Premier sur Tracker</a>
+        </div>
+    </section>
+
+    <div class="deux-colonnes">
+        <section class="bloc" aria-labelledby="titre-avenir">
+            <h2 id="titre-avenir">À venir</h2>
+            <ol class="liste-matchs" data-avenir></ol>
+            <div data-a-saisir></div>
+            <details class="ajout">
+                <summary class="bouton-contour">Ajouter un match</summary>
+                <form class="formulaire" data-form-avenir novalidate>
+                    <label class="champ">Adversaire
+                        <input name="opponent" required maxlength="60" autocomplete="off">
+                    </label>
+                    <div class="champs-ligne">
+                        <label class="champ">Date et heure
+                            <input name="datetime" type="datetime-local" required>
+                        </label>
+                        <label class="champ">Type
+                            <select name="type">
+                                <option value="officiel">Officiel</option>
+                                <option value="pracc">Pracc</option>
+                            </select>
+                        </label>
+                    </div>
+                    <label class="champ">Map
+                        <select name="map" data-select-map>
+                            <option value="">Pas encore connue</option>
+                        </select>
+                    </label>
+                    <p class="erreur" role="alert"></p>
+                    <button class="cta" type="submit">Ajouter le match</button>
+                </form>
+            </details>
+        </section>
+
+        <section class="bloc" aria-labelledby="titre-resultats">
+            <h2 id="titre-resultats">Résultats</h2>
+            <ol class="liste-matchs resultats" data-resultats></ol>
+            <details class="ajout" data-ajout-resultat>
+                <summary class="bouton-contour">Ajouter un résultat</summary>
+                <form class="formulaire" data-form-resultat novalidate>
+                    <label class="champ">Adversaire
+                        <input name="opponent" required maxlength="60" autocomplete="off">
+                    </label>
+                    <div class="champs-ligne">
+                        <label class="champ">Date
+                            <input name="date" type="date" required>
+                        </label>
+                        <label class="champ">Type
+                            <select name="type">
+                                <option value="officiel">Officiel</option>
+                                <option value="pracc">Pracc</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="champs-ligne">
+                        <label class="champ">Map
+                            <select name="map" data-select-map required>
+                                <option value="">Choisir</option>
+                            </select>
+                        </label>
+                        <label class="champ">Rang adverse
+                            <select name="elo">
+                                <option value="">Non précisé</option>
+                                <option>Iron</option><option>Bronze</option><option>Silver</option><option>Gold</option>
+                                <option>Platinum</option><option>Diamond</option><option>Ascendant</option><option>Immortal</option><option>Radiant</option>
+                            </select>
+                        </label>
+                    </div>
+                    <fieldset class="champ score-saisie">
+                        <legend>Score</legend>
+                        <label><span class="hors-ecran">Nos rounds</span><input name="nous" type="number" min="0" max="30" inputmode="numeric" placeholder="BOBER"></label>
+                        <span aria-hidden="true">–</span>
+                        <label><span class="hors-ecran">Leurs rounds</span><input name="eux" type="number" min="0" max="30" inputmode="numeric" placeholder="Eux"></label>
+                    </fieldset>
+                    <label class="champ">Lien Tracker (optionnel)
+                        <input name="trackerLink" type="url" placeholder="https://tracker.gg/…">
+                    </label>
+                    <label class="champ">Lien vidéo (optionnel)
+                        <input name="videoLink" type="url" placeholder="https://youtube.com/…">
+                    </label>
+                    <p class="erreur" role="alert"></p>
+                    <button class="cta" type="submit">Enregistrer le résultat</button>
+                </form>
+            </details>
+        </section>
+    </div>
+
+</main>
+
+<script src="js/donnees.js"></script>
+<script src="js/commun.js"></script>
+<script src="js/matchs.js"></script>
+</body>
+</html>
